@@ -435,6 +435,10 @@ namespace DiceRoller
         //show the double clicked saved formula
         private void gridFormulas_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (gridFormulas.Rows.Count == 0)
+            {
+                return;
+            }
             txtInput.Text = gridFormulas.SelectedRows[0].Cells[1].Value.ToString();
             txtInput.Focus();
         }
