@@ -56,10 +56,9 @@
             this.gridHistory = new System.Windows.Forms.DataGridView();
             this.colRolls = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.gridFormulas = new System.Windows.Forms.DataGridView();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.btnDelete = new System.Windows.Forms.Button();
             this.colFormula = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Formula = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnDelete = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridHistory)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridFormulas)).BeginInit();
@@ -70,7 +69,7 @@
             this.txtInput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtInput.Location = new System.Drawing.Point(13, 277);
             this.txtInput.Name = "txtInput";
-            this.txtInput.Size = new System.Drawing.Size(210, 20);
+            this.txtInput.Size = new System.Drawing.Size(267, 20);
             this.txtInput.TabIndex = 0;
             this.txtInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtInput_OnEnter);
             // 
@@ -191,19 +190,19 @@
             // instructionsToolStripMenuItem
             // 
             this.instructionsToolStripMenuItem.Name = "instructionsToolStripMenuItem";
-            this.instructionsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.instructionsToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.instructionsToolStripMenuItem.Text = "Instructions";
             this.instructionsToolStripMenuItem.Click += new System.EventHandler(this.instructionsToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(139, 6);
             // 
             // aboutToolStripMenuItem1
             // 
             this.aboutToolStripMenuItem1.Name = "aboutToolStripMenuItem1";
-            this.aboutToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.aboutToolStripMenuItem1.Size = new System.Drawing.Size(142, 22);
             this.aboutToolStripMenuItem1.Text = "About...";
             this.aboutToolStripMenuItem1.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -219,9 +218,9 @@
             // 
             // btnReroll
             // 
-            this.btnReroll.Location = new System.Drawing.Point(229, 274);
+            this.btnReroll.Location = new System.Drawing.Point(287, 274);
             this.btnReroll.Name = "btnReroll";
-            this.btnReroll.Size = new System.Drawing.Size(51, 23);
+            this.btnReroll.Size = new System.Drawing.Size(64, 23);
             this.btnReroll.TabIndex = 4;
             this.btnReroll.Text = "Re-roll";
             this.btnReroll.UseVisualStyleBackColor = true;
@@ -305,28 +304,6 @@
             this.gridFormulas.TabIndex = 9;
             this.gridFormulas.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridFormulas_CellDoubleClick);
             // 
-            // btnSave
-            // 
-            this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSave.Location = new System.Drawing.Point(287, 274);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(64, 23);
-            this.btnSave.TabIndex = 10;
-            this.btnSave.Text = "Save f(x)";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDelete.Location = new System.Drawing.Point(374, 274);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(64, 23);
-            this.btnDelete.TabIndex = 11;
-            this.btnDelete.Text = "Delete f(x)";
-            this.btnDelete.UseVisualStyleBackColor = true;
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-            // 
             // colFormula
             // 
             this.colFormula.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
@@ -345,13 +322,23 @@
             this.Formula.Name = "Formula";
             this.Formula.Visible = false;
             // 
+            // btnDelete
+            // 
+            this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnDelete.Location = new System.Drawing.Point(374, 274);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(64, 23);
+            this.btnDelete.TabIndex = 11;
+            this.btnDelete.Text = "Delete f(x)";
+            this.btnDelete.UseVisualStyleBackColor = true;
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(450, 305);
             this.Controls.Add(this.btnDelete);
-            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.gridFormulas);
             this.Controls.Add(this.gridHistory);
             this.Controls.Add(this.label1);
@@ -386,7 +373,6 @@
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.DataGridView gridFormulas;
-        private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.DataGridViewTextBoxColumn colRolls;
         private System.Windows.Forms.ToolStripMenuItem instructionsToolStripMenuItem;
