@@ -448,21 +448,6 @@ namespace DiceRoller
             }
         }
 
-        //save to formulas
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-            //if we've defined a label
-            if (txtInput.Text.Contains('='))
-            {
-                gridFormulas.Rows.Add(txtInput.Text.Substring(0, txtInput.Text.IndexOf('=')), txtInput.Text.Substring(txtInput.Text.IndexOf('=') + 1));
-            }
-            else
-            {
-                gridFormulas.Rows.Add(txtInput.Text, txtInput.Text);
-            }
-            txtInput.Clear();
-        }
-
         //save string to file
         private void saveTxtFile(string saveType, string text2save)
         {
