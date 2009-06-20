@@ -184,10 +184,9 @@ namespace DiceRoller
             {
                 index = temp.IndexOf('*');
 
-                for (begin = index - 1; begin > 0 && char.IsDigit(temp[begin - 1]); begin--)
+                for (begin = index - 1; begin > 0 && (char.IsDigit(temp[begin - 1]) || temp[begin] == '-'); begin--)
                 { }
-
-                for (end = index + 1; end < temp.Length - 1 && char.IsDigit(temp[end + 1]); end++)
+                for (end = index + 1; end < temp.Length - 1 && (char.IsDigit(temp[end + 1]) || temp[begin] == '-'); end++)
                 { }
 
                 first = int.Parse(temp.Substring(begin, index - begin));
@@ -200,10 +199,9 @@ namespace DiceRoller
             {
                 index = temp.IndexOf('/');
 
-                for (begin = index - 1; begin > 0 && char.IsDigit(temp[begin - 1]); begin--)
+                for (begin = index - 1; begin > 0 && (char.IsDigit(temp[begin - 1]) || temp[begin] == '-'); begin--)
                 { }
-
-                for (end = index + 1; end < temp.Length - 1 && char.IsDigit(temp[end + 1]); end++)
+                for (end = index + 1; end < temp.Length - 1 && (char.IsDigit(temp[end + 1]) || temp[begin] == '-'); end++)
                 { }
 
                 first = int.Parse(temp.Substring(begin, index - begin));
@@ -216,10 +214,9 @@ namespace DiceRoller
             {
                 index = temp.IndexOf('+');
 
-                for (begin = index - 1; begin > 0 && char.IsDigit(temp[begin - 1]); begin--)
+                for (begin = index - 1; begin > 0 && (char.IsDigit(temp[begin - 1]) || temp[begin] == '-'); begin--)
                 { }
-
-                for (end = index + 1; end < temp.Length - 1 && char.IsDigit(temp[end + 1]); end++)
+                for (end = index + 1; end < temp.Length - 1 && (char.IsDigit(temp[end + 1]) || temp[begin] == '-'); end++)
                 { }
 
                 first = int.Parse(temp.Substring(begin, index - begin));
@@ -228,7 +225,7 @@ namespace DiceRoller
                 temp = temp.Insert(begin, (first + second).ToString());
             }
 
-            while (temp.Contains('-'))
+            /*while (temp.Contains('-'))
             {
                 index = temp.IndexOf('-');
 
@@ -242,7 +239,7 @@ namespace DiceRoller
                 second = int.Parse(temp.Substring(index + 1, end - index));
                 temp = temp.Remove(begin, end - begin + 1);
                 temp = temp.Insert(begin, (first - second).ToString());
-            }
+            }*/
 
             return temp + str;
         }
@@ -264,22 +261,13 @@ namespace DiceRoller
                 label = str.Substring(0, str.IndexOf('='));
                 //remove the label from the string so that the roller functions don't get confused
                 str = str.Substring(str.IndexOf('=') + 1);
-
+                if (str.Contains(label))
+                {
+                    throw new DiceException("Formula can not reference itself", "Invalid Formula");
+                }
                 //store formula in gridFormulas
                 gridFormulas.Rows.Add(label,str);
                 return "Stored: " + input;
-            }
-
-            //handle variables called in the formula
-            for (int i = 0; i < gridFormulas.Rows.Count; i++)
-            {
-                //if a variable name exists in the formula and the label is not the same as the value
-                if (str.ToLower().Contains(gridFormulas.Rows[i].Cells[0].Value.ToString().ToLower()) && 
-                    gridFormulas.Rows[i].Cells[0].Value.ToString().ToLower() != gridFormulas.Rows[i].Cells[1].Value.ToString().ToLower())
-                {
-                    //replace it with the string stored for that label
-                    str = str.Replace(gridFormulas.Rows[i].Cells[0].Value.ToString(), gridFormulas.Rows[i].Cells[1].Value.ToString());
-                }
             }
 
             //clear the rolls variable
@@ -289,14 +277,8 @@ namespace DiceRoller
             for (int i = 0; i < str.Length; i++)
             {
                 //if there is dice
-                if (str[i] == 'd')
+                if (str[i] == 'd' && char.IsDigit(str, i + 1) && char.IsDigit(str, i - 1) )
                 {
-                    //error check: make sure there are numbers on each side of the 'd' character
-                    if (!char.IsDigit(str, i + 1) || !char.IsDigit(str, i - 1))
-                    {
-                        throw new DiceException("Dice fromat is [n]d[n]", "Dice Format Error");
-                    }
-
                     int begin, end;
 
                     //get to the beginning of the dice variable
@@ -330,8 +312,31 @@ namespace DiceRoller
                 }
             }
 
+            //handle variables called in the formula
+            for (int i = 0; i < gridFormulas.Rows.Count; i++)
+            {
+                //if a variable name exists in the formula and the label is not the same as the value
+                if (str.ToLower().Contains(gridFormulas.Rows[i].Cells[0].Value.ToString().ToLower()) &&
+                    gridFormulas.Rows[i].Cells[0].Value.ToString().ToLower() != gridFormulas.Rows[i].Cells[1].Value.ToString().ToLower())
+                {
+                    //replace it with the string stored for that label
+                    str = str.Replace(gridFormulas.Rows[i].Cells[0].Value.ToString(), gridFormulas.Rows[i].Cells[1].Value.ToString());
+                }
+            }
+
+            string stupid_string = str;
+            //convert subtraction operations into additions of negative numbers
+            for (int i = 1; i < stupid_string.Length; i++)
+            {
+                if (stupid_string[i] == '-' && stupid_string[i - 1] != '*' &&
+                    stupid_string[i - 1] != '/' && stupid_string[i - 1] != '+')
+                {
+                    stupid_string = stupid_string.Insert(i++, "+");
+                }
+            }
+
             //run the calculations and assemble the string for output
-            str += " = " + Calc(str + ")");
+            str += " = " + Calc(stupid_string + ")");
             input += ": " + rolls + "->" + System.Environment.NewLine + str;
 
             return input;
