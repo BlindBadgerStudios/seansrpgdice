@@ -56,9 +56,9 @@
             this.gridHistory = new System.Windows.Forms.DataGridView();
             this.colRolls = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.gridFormulas = new System.Windows.Forms.DataGridView();
+            this.btnDelete = new System.Windows.Forms.Button();
             this.colFormula = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Formula = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.btnDelete = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridHistory)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridFormulas)).BeginInit();
@@ -304,24 +304,6 @@
             this.gridFormulas.TabIndex = 9;
             this.gridFormulas.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridFormulas_CellDoubleClick);
             // 
-            // colFormula
-            // 
-            this.colFormula.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.colFormula.DefaultCellStyle = dataGridViewCellStyle3;
-            this.colFormula.HeaderText = "Saved (Double-click)";
-            this.colFormula.MinimumWidth = 100;
-            this.colFormula.Name = "colFormula";
-            this.colFormula.ReadOnly = true;
-            this.colFormula.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.colFormula.ToolTipText = "Formulas you want to be able to run repeatedly.";
-            // 
-            // Formula
-            // 
-            this.Formula.HeaderText = "Formula";
-            this.Formula.Name = "Formula";
-            this.Formula.Visible = false;
-            // 
             // btnDelete
             // 
             this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -332,6 +314,25 @@
             this.btnDelete.Text = "Delete f(x)";
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            // 
+            // colFormula
+            // 
+            this.colFormula.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.colFormula.DefaultCellStyle = dataGridViewCellStyle3;
+            this.colFormula.HeaderText = "Saved (Double-click)";
+            this.colFormula.MinimumWidth = 100;
+            this.colFormula.Name = "colFormula";
+            this.colFormula.ReadOnly = true;
+            this.colFormula.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.colFormula.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.colFormula.ToolTipText = "Formulas you want to be able to run repeatedly.";
+            // 
+            // Formula
+            // 
+            this.Formula.HeaderText = "Formula";
+            this.Formula.Name = "Formula";
+            this.Formula.Visible = false;
             // 
             // MainForm
             // 
