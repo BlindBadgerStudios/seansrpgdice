@@ -22,6 +22,25 @@ namespace DiceRoller
         private string rolls;           //string listing all the rolls
         private int openRollLimit;      //the sliding limit for open rolls
 
+        private class DiceException : ApplicationException
+        {
+            private string errorType;
+
+            public DiceException(string message)
+                : base(message)
+            { }
+            public DiceException(string message, string error_type) : base(message)
+            {
+                errorType = error_type;
+            }
+
+            public string ErrorType
+            {
+                get { return this.errorType; }
+                set { this.errorType = value; }
+            }
+        }
+
         public MainForm()
         {
             InitializeComponent();
@@ -42,13 +61,13 @@ namespace DiceRoller
             //ensure that we aren't rerolling infinitely
             if (reroll > sides)
             {
-                throw new Exception("Reroll value must be less than the number of sides on the die");
+                throw new DiceException("Reroll value must be less than the number of sides on the die","Dice Format Error");
             }
 
             //ensure we have a valid dice size
             if (sides < 2)
             {
-                throw new Exception("Dice must have atleast 2 sides");
+                throw new DiceException("Dice must have atleast 2 sides", "Dice Format Error");
             }
 
             //for each dice, get a value
@@ -123,7 +142,7 @@ namespace DiceRoller
             //ensure the end parinthesis exists
             if (!str.Contains(')'))
             {
-                throw new Exception("Formatting Error: Parenthesis do not match");
+                throw new DiceException("Parenthesis do not match","Invalid Formula");
             }
 
             //set marker at the end parinthesis
@@ -275,7 +294,7 @@ namespace DiceRoller
                     //error check: make sure there are numbers on each side of the 'd' character
                     if (!char.IsDigit(str, i + 1) || !char.IsDigit(str, i - 1))
                     {
-                        throw new Exception("Formatting Error: Dice fromat is [n]d[n]");
+                        throw new DiceException("Dice fromat is [n]d[n]", "Dice Format Error");
                     }
 
                     int begin, end;
@@ -324,14 +343,25 @@ namespace DiceRoller
             switch (e.KeyChar)
             {
                 case (char)13:      //enter key
-                    //run calculation and add it to display
-                    gridHistory.Rows.Add(Calculate(txtInput.Text));
-                    //scroll to newly added value
-                    gridHistory.FirstDisplayedScrollingRowIndex = gridHistory.RowCount - 1;
-                    //save this formula for rerolling
-                    lastinput = txtInput.Text;
-                    //clear input
-                    txtInput.Clear();
+                    try
+                    {
+                        //run calculation and add it to display
+                        gridHistory.Rows.Add(Calculate(txtInput.Text));
+                        //scroll to newly added value
+                        gridHistory.FirstDisplayedScrollingRowIndex = gridHistory.RowCount - 1;
+                        //save this formula for rerolling
+                        lastinput = txtInput.Text;
+                        //clear input
+                        txtInput.Clear();
+                    }
+                    catch (DiceException ex)
+                    {
+                        MessageBox.Show(ex.Message, ex.ErrorType);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
                     break;
                 default:
                     break;
@@ -378,10 +408,21 @@ namespace DiceRoller
         {
             if (lastinput.Length > 0)
             {
-                //perform rolls/calculation on the last saved roll performed
-                gridHistory.Rows.Add(Calculate(lastinput));
-                //scroll to newly added value
-                gridHistory.FirstDisplayedScrollingRowIndex = gridHistory.RowCount - 1;
+                try
+                {
+                    //perform rolls/calculation on the last saved roll performed
+                    gridHistory.Rows.Add(Calculate(lastinput));
+                    //scroll to newly added value
+                    gridHistory.FirstDisplayedScrollingRowIndex = gridHistory.RowCount - 1;
+                }
+                catch (DiceException ex)
+                {
+                    MessageBox.Show(ex.Message, ex.ErrorType);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
 
@@ -503,7 +544,7 @@ namespace DiceRoller
                 case "Formulas":
                     if (!input[0].StartsWith("Formulas:"))
                     {
-                        MessageBox.Show("ERROR: This file was not created by this program", "Invalid File format");
+                        throw new DiceException("This file was not created by this program", "Invalid File format");
                     }
                     else
                     {
@@ -518,7 +559,7 @@ namespace DiceRoller
                 case "Roll History":
                     if (!input[0].StartsWith("Roll History for:"))
                     {
-                        MessageBox.Show("ERROR: This file was not created by this program", "Invalid File format");
+                        throw new DiceException("This file was not created by this program", "Invalid File format");
                     }
                     else
                     {
@@ -537,13 +578,35 @@ namespace DiceRoller
         //load roll history file
         private void rollHistoryToolStripMenuItem3_Click(object sender, EventArgs e)
         {
-            loadTxtFile("Roll History");
+            try
+            {
+                loadTxtFile("Roll History");
+            }
+            catch (DiceException ex)
+            {
+                MessageBox.Show(ex.Message, ex.ErrorType);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show( ex.Message);
+            }
         }
 
         //load formula file
         private void formulasToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            loadTxtFile("Formulas");
+            try
+            {
+                loadTxtFile("Formulas");
+            }
+            catch (DiceException ex)
+            {
+                MessageBox.Show(ex.Message, ex.ErrorType);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }
