@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             this.txtInput = new System.Windows.Forms.TextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -261,8 +261,8 @@
             this.gridHistory.Location = new System.Drawing.Point(12, 52);
             this.gridHistory.Name = "gridHistory";
             this.gridHistory.RowHeadersVisible = false;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.gridHistory.RowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.gridHistory.RowsDefaultCellStyle = dataGridViewCellStyle8;
             this.gridHistory.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.gridHistory.Size = new System.Drawing.Size(268, 219);
             this.gridHistory.TabIndex = 8;
@@ -270,8 +270,8 @@
             // colRolls
             // 
             this.colRolls.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.colRolls.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.colRolls.DefaultCellStyle = dataGridViewCellStyle7;
             this.colRolls.HeaderText = "Result";
             this.colRolls.Name = "colRolls";
             this.colRolls.ReadOnly = true;
@@ -294,7 +294,9 @@
             this.colFormula,
             this.Formula});
             this.gridFormulas.Location = new System.Drawing.Point(287, 24);
+            this.gridFormulas.MultiSelect = false;
             this.gridFormulas.Name = "gridFormulas";
+            this.gridFormulas.ReadOnly = true;
             this.gridFormulas.RowHeadersVisible = false;
             this.gridFormulas.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.gridFormulas.Size = new System.Drawing.Size(151, 247);
@@ -304,8 +306,8 @@
             // colFormula
             // 
             this.colFormula.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.colFormula.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.colFormula.DefaultCellStyle = dataGridViewCellStyle9;
             this.colFormula.HeaderText = "Saved (Double-click)";
             this.colFormula.MinimumWidth = 100;
             this.colFormula.Name = "colFormula";
