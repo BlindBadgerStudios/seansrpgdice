@@ -120,19 +120,46 @@ namespace DiceRoller
         //handle open rolls for anima system
         private int OpenRoll(int dice, int sides)
         {
-            return dice;
+            //int openRollLimit = 90; //open roll check (supports only 1d100 rolls)
+            int total, temp;
+            if (dice != 1 || sides != 100 )
+            {
+                throw new DiceException("Only a single d100 can be used with open roll option", "Dice Format Error");
+            }
+            total = temp = myRand.Next(1, 101);
+            rolls += "[" + temp.ToString();
+            //continue open rolling until the result no longer qualifies
+            while (temp >= openRollLimit)
+            {
+                //slide the open roll lower limit up until we reach 100
+                if (openRollLimit < 100)
+                {
+                    openRollLimit++;
+                }
+
+                //roll again and add the result
+                temp = myRand.Next(1, 101);
+                total += temp;
+
+                //insert next roll into output string
+                rolls += "," + temp.ToString();
+            }
+            //insert ] to denote end of the open rolls
+            rolls += "]";
+
+            return total;
         }
 
-        //if the string has parinthesis, calculate the totals and output the resulting string
+        //if the string has parenthesis, calculate the totals and output the resulting string
         private string Calc(string str)
         {
             string temp;
             int begin, end, first, second, index;
 
-            //handle parinthesis
+            //handle parenthesis
             if (str.Contains('('))
             {
-                //put the marker at the beginning of the parinthesis
+                //put the marker at the beginning of the parenthesis
                 index = str.IndexOf('(');
 
                 if (char.IsDigit(str[index - 1]))
@@ -140,11 +167,11 @@ namespace DiceRoller
                     str = str.Insert(index++, "*");
                 }
 
-                //recurse to calculate what is within the parinthesis first
+                //recurse to calculate what is within the parenthesis first
                 str = str.Substring(0, index) + Calc(str.Substring(index + 1));
             }
 
-            //ensure the end parinthesis exists
+            //ensure the end parenthesis exists
             if (!str.Contains(')'))
             {
                 throw new DiceException("Parenthesis do not match", "Invalid Formula");
@@ -305,7 +332,10 @@ namespace DiceRoller
                             }
                             break;
                         case 'o':   //open rolls
-
+                            //remove the string so that it won't get parsed again
+                            str = str.Remove(begin, end - begin + 2);
+                            //replace this part of the formula with the number result using open rolls
+                            str = str.Insert(begin, OpenRoll(dice, sides).ToString());
                             break;
                         default:
                             throw new DiceException("Unrecognized modifier on dice roll", "Dice Format Error");
