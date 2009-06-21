@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.txtInput = new System.Windows.Forms.TextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,7 +56,6 @@
             this.gridHistory = new System.Windows.Forms.DataGridView();
             this.colRolls = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.gridFormulas = new System.Windows.Forms.DataGridView();
-            this.btnDelete = new System.Windows.Forms.Button();
             this.colFormula = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Formula = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.menuStrip1.SuspendLayout();
@@ -247,7 +246,6 @@
             // gridHistory
             // 
             this.gridHistory.AllowUserToAddRows = false;
-            this.gridHistory.AllowUserToDeleteRows = false;
             this.gridHistory.AllowUserToResizeColumns = false;
             this.gridHistory.AllowUserToResizeRows = false;
             this.gridHistory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -263,8 +261,8 @@
             this.gridHistory.Location = new System.Drawing.Point(12, 52);
             this.gridHistory.Name = "gridHistory";
             this.gridHistory.RowHeadersVisible = false;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.gridHistory.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.gridHistory.RowsDefaultCellStyle = dataGridViewCellStyle5;
             this.gridHistory.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.gridHistory.Size = new System.Drawing.Size(268, 219);
             this.gridHistory.TabIndex = 8;
@@ -272,8 +270,8 @@
             // colRolls
             // 
             this.colRolls.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.colRolls.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.colRolls.DefaultCellStyle = dataGridViewCellStyle4;
             this.colRolls.HeaderText = "Result";
             this.colRolls.Name = "colRolls";
             this.colRolls.ReadOnly = true;
@@ -283,7 +281,6 @@
             // gridFormulas
             // 
             this.gridFormulas.AllowUserToAddRows = false;
-            this.gridFormulas.AllowUserToDeleteRows = false;
             this.gridFormulas.AllowUserToResizeColumns = false;
             this.gridFormulas.AllowUserToResizeRows = false;
             this.gridFormulas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -304,22 +301,11 @@
             this.gridFormulas.TabIndex = 9;
             this.gridFormulas.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridFormulas_CellDoubleClick);
             // 
-            // btnDelete
-            // 
-            this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDelete.Location = new System.Drawing.Point(374, 274);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(64, 23);
-            this.btnDelete.TabIndex = 11;
-            this.btnDelete.Text = "Delete f(x)";
-            this.btnDelete.UseVisualStyleBackColor = true;
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-            // 
             // colFormula
             // 
             this.colFormula.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.colFormula.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.colFormula.DefaultCellStyle = dataGridViewCellStyle6;
             this.colFormula.HeaderText = "Saved (Double-click)";
             this.colFormula.MinimumWidth = 100;
             this.colFormula.Name = "colFormula";
@@ -339,7 +325,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(450, 305);
-            this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.gridFormulas);
             this.Controls.Add(this.gridHistory);
             this.Controls.Add(this.label1);
@@ -374,7 +359,6 @@
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.DataGridView gridFormulas;
-        private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.DataGridViewTextBoxColumn colRolls;
         private System.Windows.Forms.ToolStripMenuItem instructionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
