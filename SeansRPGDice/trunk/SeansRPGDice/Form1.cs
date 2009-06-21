@@ -118,6 +118,12 @@ namespace DiceRoller
             return Roll(dice, sides, 0);
         }
 
+        //handle open rolls for anima system
+        private int OpenRoll(int dice, int sides)
+        {
+            return dice;
+        }
+
         //if the string has parinthesis, calculate the totals and output the resulting string
         private string Calc(string str)
         {
@@ -143,6 +149,7 @@ namespace DiceRoller
             if (!str.Contains(')'))
             {
                 throw new DiceException("Parenthesis do not match","Invalid Formula");
+                throw new DiceException("Parenthesis do not match", "Invalid Formula");
             }
 
             //set marker at the end parinthesis
@@ -254,6 +261,12 @@ namespace DiceRoller
             //hard coded starting value the lower limit of open rolls
             openRollLimit = 90;
 
+
+            if (str.Length == 0)
+            {
+                return "";
+            }
+
             //handle labels
             if (input.Contains('='))
             {
@@ -363,8 +376,11 @@ namespace DiceRoller
                 case (char)13:      //enter key
                     try
                     {
+                        string str = Calculate(txtInput.Text);
+                        if (str.Length == 0)
+                            break;
                         //run calculation and add it to display
-                        addHistory(Calculate(txtInput.Text));
+                        addHistory(str);
                         //scroll to newly added value
                         gridHistory.FirstDisplayedScrollingRowIndex = gridHistory.RowCount - 1;
                         //save this formula for rerolling
@@ -420,29 +436,6 @@ namespace DiceRoller
                 System.Environment.NewLine + 
                 "You may add as many modifiers and dice sets as you wish.", "Instructions");
         }
-
-        //reroll using last values
-        /*private void btnReroll_Click(object sender, EventArgs e)
-        {
-            if (lastinput.Length > 0)
-            {
-                try
-                {
-                    //perform rolls/calculation on the last saved roll performed
-                    addHistory(Calculate(lastinput));
-                    //scroll to newly added value
-                    gridHistory.FirstDisplayedScrollingRowIndex = gridHistory.RowCount - 1;
-                }
-                catch (DiceException ex)
-                {
-                    MessageBox.Show(ex.Message, ex.ErrorType);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }
-        }*/
 
         //clear the history
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
@@ -604,6 +597,28 @@ namespace DiceRoller
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void txtTest(object sender, PreviewKeyDownEventArgs e)
+        {
+            if (e.KeyCode == Keys.Up)
+            {
+                try
+                {
+                    //perform rolls/calculation on the last saved roll performed
+                    addHistory(Calculate(lastinput));
+                    //scroll to newly added value
+                    gridHistory.FirstDisplayedScrollingRowIndex = gridHistory.RowCount - 1;
+                }
+                catch (DiceException ex)
+                {
+                    MessageBox.Show(ex.Message, ex.ErrorType);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
     }
