@@ -44,7 +44,7 @@ namespace DiceRoller
         {
             InitializeComponent();
             myRand = new Random();
-            lastinput = "0";
+            lastinput = "";
             rolls = "";
             openRollLimit = 90;
         }
@@ -150,10 +150,10 @@ namespace DiceRoller
                 throw new DiceException("Parenthesis do not match", "Invalid Formula");
             }
 
-            //set marker at the end parinthesis
+            //set marker at the end parenthesis
             index = str.IndexOf(')');
 
-            //get just what is within the parinthesis
+            //get just what is within the parenthesis
             temp = str.Substring(0, index);
 
             //handle n(formula)...multiply
@@ -258,40 +258,63 @@ namespace DiceRoller
             //parse through the string, character by character
             for (int i = 0; i < str.Length; i++)
             {
-                //if there is dice
-                if (str[i] == 'd' && char.IsDigit(str, i + 1) && char.IsDigit(str, i - 1) )
+                int begin, end;
+                if (str[i] != 'd' || !char.IsDigit(str, i + 1) || !char.IsDigit(str, i - 1))
                 {
-                    int begin, end;
+                    continue;
+                }
+                //get to the beginning of the dice variable
+                for (begin = i - 1; begin > 0 && char.IsDigit(str[begin - 1]); begin--)
+                { }
 
-                    //get to the beginning of the dice variable
-                    for (begin = i - 1; begin > 0 && char.IsDigit(str[begin - 1]); begin--)
-                    { }
+                //get to the end of the dice variable
+                for (end = i + 1; end < str.Length - 1 && char.IsDigit(str[end + 1]); end++)
+                { }
 
-                    //get to the end of the dice variable
-                    for (end = i + 1; end < str.Length - 1 && char.IsDigit(str[end + 1]); end++)
-                    { }
+                //set variable to how many dice we want to roll
+                dice = int.Parse(str.Substring(begin, i - begin));
 
-                    //set variable to how many dice we want to roll
-                    dice = int.Parse(str.Substring(begin, i - begin));
+                //set variable to the size of the dice we want to roll
+                sides = int.Parse(str.Substring(i + 1, end - i));
 
-                    //set variable to the size of the dice we want to roll
-                    sides = int.Parse(str.Substring(i + 1, end - i));
+                if (end < str.Length - 1 && char.IsLetter(str[end + 1]))
+                {
+                    i = end + 1;
+                    switch (str[i])
+                    {
+                        case 'r':
+                            for (end = i + 1; end < str.Length && char.IsDigit(str[end]); end++)
+                            { }
+                            --end;
+                            if (end == i)
+                            {
+                                //remove the string so that it won't get parsed again
+                                str = str.Remove(begin, end - begin + 1);
+                                str = str.Insert(begin, Roll(dice, sides,1).ToString());
+                            }
+                            else
+                            {
+                                i = int.Parse(str.Substring(i+1,end-i));
+                                //remove the string so that it won't get parsed again
+                                str = str.Remove(begin, end - begin + 1);
+                                str = str.Insert(begin, Roll(dice, sides, i).ToString());
+                            }
+                            break;
+                        case 'o':
 
+                            break;
+                        default:
+                            throw new DiceException("Unrecognized modifier on dice roll", "Dice Format Error");
+                    }
+                }
+                else
+                {
                     //remove the string so that it won't get parsed again
                     str = str.Remove(begin, end - begin + 1);
 
-                    //determine if the reroll variable is set, then replace the dice value with the number result
-                    if (chkReroll.Checked)
-                    {
-                        str = str.Insert(begin, Roll(dice, sides, int.Parse(txtReroll.Text)).ToString());
-                    }
-                    else
-                    {
-                        str = str.Insert(begin, Roll(dice, sides).ToString());
-                    }
-
-                    i = begin;
+                    str = str.Insert(begin, Roll(dice, sides).ToString());
                 }
+                i = begin;
             }
 
             //handle variables called in the formula
@@ -572,23 +595,9 @@ namespace DiceRoller
         //run this on every keystroke because keypress events don't parse arrow keys
         private void txtTest(object sender, PreviewKeyDownEventArgs e)
         {
-            if (e.KeyCode == Keys.Up)
+            if (e.KeyCode == Keys.Up && lastinput.Length > 0)
             {
-                try
-                {
-                    //perform rolls/calculation on the last saved roll performed
-                    addHistory(Calculate(lastinput));
-                    //scroll to newly added value
-                    gridHistory.FirstDisplayedScrollingRowIndex = gridHistory.RowCount - 1;
-                }
-                catch (DiceException ex)
-                {
-                    MessageBox.Show(ex.Message, ex.ErrorType);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
+                txtInput.Text = lastinput;
             }
         }
     }
