@@ -14,7 +14,6 @@ namespace DiceRoller
     {
         /* TODO:
          * More error checking (reroll+open roll looping)
-         * On "=", assign string on right, to variable on left (make sure we don't allow recursive labels)
          * ensure there is only one '=' character
          */
         private Random myRand;          //random generator
@@ -148,7 +147,6 @@ namespace DiceRoller
             //ensure the end parinthesis exists
             if (!str.Contains(')'))
             {
-                throw new DiceException("Parenthesis do not match","Invalid Formula");
                 throw new DiceException("Parenthesis do not match", "Invalid Formula");
             }
 
@@ -158,7 +156,7 @@ namespace DiceRoller
             //get just what is within the parinthesis
             temp = str.Substring(0, index);
 
-            //??
+            //handle n(formula)...multiply
             if (index == str.Length - 1)
             {
                 str = "";
@@ -171,22 +169,7 @@ namespace DiceRoller
                 str = str.Substring(index + 1);
             }
 
-            /*while (temp.Contains('d'))
-            {
-            index = temp.IndexOf('d');
-
-            for (begin = index - 1; begin > 0 && char.IsDigit(temp[begin - 1]); begin--)
-            { }
-
-            for (end = index + 1; end < temp.Length - 1 && char.IsDigit(temp[end + 1]); end++)
-            { }
-
-            first = int.Parse(temp.Substring(begin, index - begin));
-            second = int.Parse(temp.Substring(index + 1, end - index));
-            temp = temp.Remove(begin, end - begin + 1);
-            temp = temp.Insert(begin, Roll(first, second).ToString());
-            }*/
-
+            //multiply
             while (temp.Contains('*'))
             {
                 index = temp.IndexOf('*');
@@ -202,6 +185,7 @@ namespace DiceRoller
                 temp = temp.Insert(begin, (first * second).ToString());
             }
 
+            //divide
             while (temp.Contains('/'))
             {
                 index = temp.IndexOf('/');
@@ -217,6 +201,7 @@ namespace DiceRoller
                 temp = temp.Insert(begin, (first / second).ToString());
             }
 
+            //add (which also handles subtract)
             while (temp.Contains('+'))
             {
                 index = temp.IndexOf('+');
@@ -232,22 +217,6 @@ namespace DiceRoller
                 temp = temp.Insert(begin, (first + second).ToString());
             }
 
-            /*while (temp.Contains('-'))
-            {
-                index = temp.IndexOf('-');
-
-                for (begin = index - 1; begin > 0 && char.IsDigit(temp[begin - 1]); begin--)
-                { }
-
-                for (end = index + 1; end < temp.Length - 1 && char.IsDigit(temp[end + 1]); end++)
-                { }
-
-                first = int.Parse(temp.Substring(begin, index - begin));
-                second = int.Parse(temp.Substring(index + 1, end - index));
-                temp = temp.Remove(begin, end - begin + 1);
-                temp = temp.Insert(begin, (first - second).ToString());
-            }*/
-
             return temp + str;
         }
 
@@ -261,7 +230,7 @@ namespace DiceRoller
             //hard coded starting value the lower limit of open rolls
             openRollLimit = 90;
 
-
+            //don't process if there's nothing in the formula
             if (str.Length == 0)
             {
                 return "";
@@ -600,6 +569,7 @@ namespace DiceRoller
             }
         }
 
+        //run this on every keystroke because keypress events don't parse arrow keys
         private void txtTest(object sender, PreviewKeyDownEventArgs e)
         {
             if (e.KeyCode == Keys.Up)
