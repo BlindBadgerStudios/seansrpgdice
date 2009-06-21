@@ -422,7 +422,7 @@ namespace DiceRoller
         }
 
         //reroll using last values
-        private void btnReroll_Click(object sender, EventArgs e)
+        /*private void btnReroll_Click(object sender, EventArgs e)
         {
             if (lastinput.Length > 0)
             {
@@ -442,7 +442,7 @@ namespace DiceRoller
                     MessageBox.Show(ex.Message);
                 }
             }
-        }
+        }*/
 
         //clear the history
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
