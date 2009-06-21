@@ -277,15 +277,17 @@ namespace DiceRoller
                 //set variable to the size of the dice we want to roll
                 sides = int.Parse(str.Substring(i + 1, end - i));
 
+                //parse extra syntax
                 if (end < str.Length - 1 && char.IsLetter(str[end + 1]))
                 {
                     i = end + 1;
                     switch (str[i])
                     {
-                        case 'r':
+                        case 'r': //re-roll syntax
                             for (end = i + 1; end < str.Length && char.IsDigit(str[end]); end++)
                             { }
                             --end;
+                            //if the r doesn't have a number after it, default to reroll 1s
                             if (end == i)
                             {
                                 //remove the string so that it won't get parsed again
@@ -294,13 +296,15 @@ namespace DiceRoller
                             }
                             else
                             {
+                                //get the number after the 'r' character and assign it to the index integer
                                 i = int.Parse(str.Substring(i+1,end-i));
                                 //remove the string so that it won't get parsed again
                                 str = str.Remove(begin, end - begin + 1);
+                                //replace this part of the formula with the number result (using the reroll value defined)
                                 str = str.Insert(begin, Roll(dice, sides, i).ToString());
                             }
                             break;
-                        case 'o':
+                        case 'o':   //open rolls
 
                             break;
                         default:
