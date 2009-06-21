@@ -88,7 +88,7 @@ namespace DiceRoller
 
                 total += temp;
 
-                //insert open roll loop here (supports only 1d100 rolls)
+                //open roll check (supports only 1d100 rolls)
                 if (dice == 1 && sides == 100 && chkOpenRoll.Checked)
                 {
                     //continue open rolling until the result no longer qualifies
@@ -342,6 +342,19 @@ namespace DiceRoller
             return input;
         }
 
+        //add data to roll history datagridview and highlight if an open roll occured
+        private void addHistory(string input)
+        {
+            gridHistory.Rows.Add(input);
+
+            //check for open rolls
+            if (openRollLimit > 90)
+            {
+                //highlight the row
+                gridHistory.Rows[gridHistory.Rows.Count - 1].Cells[0].Style.BackColor = Color.Green;
+            }
+        }
+
         //handle special keys in the input
         private void txtInput_OnEnter(object sender, KeyPressEventArgs e)
         {
@@ -351,7 +364,7 @@ namespace DiceRoller
                     try
                     {
                         //run calculation and add it to display
-                        gridHistory.Rows.Add(Calculate(txtInput.Text));
+                        addHistory(Calculate(txtInput.Text));
                         //scroll to newly added value
                         gridHistory.FirstDisplayedScrollingRowIndex = gridHistory.RowCount - 1;
                         //save this formula for rerolling
@@ -416,7 +429,7 @@ namespace DiceRoller
                 try
                 {
                     //perform rolls/calculation on the last saved roll performed
-                    gridHistory.Rows.Add(Calculate(lastinput));
+                    addHistory(Calculate(lastinput));
                     //scroll to newly added value
                     gridHistory.FirstDisplayedScrollingRowIndex = gridHistory.RowCount - 1;
                 }
@@ -446,15 +459,6 @@ namespace DiceRoller
             }
             txtInput.Text = gridFormulas.SelectedRows[0].Cells[1].Value.ToString();
             txtInput.Focus();
-        }
-
-        //delete selection from saved formulas
-        private void btnDelete_Click(object sender, EventArgs e)
-        {
-            if (gridFormulas.Rows.Count > 0)
-            {
-                gridFormulas.Rows.Remove(gridFormulas.SelectedRows[0]);
-            }
         }
 
         //save string to file
