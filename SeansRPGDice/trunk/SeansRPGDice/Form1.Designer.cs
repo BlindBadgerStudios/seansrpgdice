@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.txtInput = new System.Windows.Forms.TextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,7 +50,6 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.chkReroll = new System.Windows.Forms.CheckBox();
-            this.btnReroll = new System.Windows.Forms.Button();
             this.txtReroll = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.gridHistory = new System.Windows.Forms.DataGridView();
@@ -215,16 +214,6 @@
             this.chkReroll.Text = "Reroll";
             this.chkReroll.UseVisualStyleBackColor = true;
             // 
-            // btnReroll
-            // 
-            this.btnReroll.Location = new System.Drawing.Point(287, 274);
-            this.btnReroll.Name = "btnReroll";
-            this.btnReroll.Size = new System.Drawing.Size(64, 23);
-            this.btnReroll.TabIndex = 4;
-            this.btnReroll.Text = "Re-roll";
-            this.btnReroll.UseVisualStyleBackColor = true;
-            this.btnReroll.Click += new System.EventHandler(this.btnReroll_Click);
-            // 
             // txtReroll
             // 
             this.txtReroll.Location = new System.Drawing.Point(60, 26);
@@ -261,8 +250,8 @@
             this.gridHistory.Location = new System.Drawing.Point(12, 52);
             this.gridHistory.Name = "gridHistory";
             this.gridHistory.RowHeadersVisible = false;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.gridHistory.RowsDefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.gridHistory.RowsDefaultCellStyle = dataGridViewCellStyle2;
             this.gridHistory.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.gridHistory.Size = new System.Drawing.Size(268, 219);
             this.gridHistory.TabIndex = 8;
@@ -270,8 +259,8 @@
             // colRolls
             // 
             this.colRolls.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.colRolls.DefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.colRolls.DefaultCellStyle = dataGridViewCellStyle1;
             this.colRolls.HeaderText = "Result";
             this.colRolls.Name = "colRolls";
             this.colRolls.ReadOnly = true;
@@ -299,15 +288,15 @@
             this.gridFormulas.ReadOnly = true;
             this.gridFormulas.RowHeadersVisible = false;
             this.gridFormulas.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.gridFormulas.Size = new System.Drawing.Size(151, 247);
+            this.gridFormulas.Size = new System.Drawing.Size(151, 273);
             this.gridFormulas.TabIndex = 9;
             this.gridFormulas.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridFormulas_CellDoubleClick);
             // 
             // colFormula
             // 
             this.colFormula.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.colFormula.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.colFormula.DefaultCellStyle = dataGridViewCellStyle3;
             this.colFormula.HeaderText = "Saved (Double-click)";
             this.colFormula.MinimumWidth = 100;
             this.colFormula.Name = "colFormula";
@@ -320,6 +309,7 @@
             // 
             this.Formula.HeaderText = "Formula";
             this.Formula.Name = "Formula";
+            this.Formula.ReadOnly = true;
             this.Formula.Visible = false;
             // 
             // MainForm
@@ -331,7 +321,6 @@
             this.Controls.Add(this.gridHistory);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtReroll);
-            this.Controls.Add(this.btnReroll);
             this.Controls.Add(this.chkReroll);
             this.Controls.Add(this.txtInput);
             this.Controls.Add(this.menuStrip1);
@@ -354,7 +343,6 @@
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.CheckBox chkReroll;
-        private System.Windows.Forms.Button btnReroll;
         private System.Windows.Forms.TextBox txtReroll;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridView gridHistory;
