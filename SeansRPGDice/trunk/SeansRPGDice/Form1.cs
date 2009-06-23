@@ -13,141 +13,21 @@ namespace DiceRoller
     public partial class MainForm : Form
     {
         /* TODO:
-         * More error checking (reroll+open roll looping)
+         * More error checking
          * ensure there is only one '=' character
+         * Fix Highlighting text for open rolls, etc.
+         * Debug new code
          */
         private Random myRand;          //random generator
         private string lastinput;       //track the last formula used
-        private string rolls;           //string listing all the rolls
-        private int openRollLimit;      //the sliding limit for open rolls
-
-        private class DiceException : ApplicationException
-        {
-            private string errorType;
-
-            public DiceException(string message)
-                : base(message)
-            { }
-            public DiceException(string message, string error_type) : base(message)
-            {
-                errorType = error_type;
-            }
-
-            public string ErrorType
-            {
-                get { return this.errorType; }
-                set { this.errorType = value; }
-            }
-        }
+        private Dice dice;
 
         public MainForm()
         {
             InitializeComponent();
             myRand = new Random();
             lastinput = "";
-            rolls = "";
-            openRollLimit = 90;
-        }
-
-        //roll dice as specified and output the result, replacing reroll values and below with higher numbers
-        private int Roll(int dice, int sides, int reroll)
-        {
-            int temp, total = 0;
-
-            //starting character for roll display
-            rolls += '[';
-
-            //ensure that we aren't rerolling infinitely
-            if (reroll > sides)
-            {
-                throw new DiceException("Reroll value must be less than the number of sides on the die","Dice Format Error");
-            }
-
-            //ensure we have a valid dice size
-            if (sides < 2)
-            {
-                throw new DiceException("Dice must have atleast 2 sides", "Dice Format Error");
-            }
-
-            //for each dice, get a value
-            for (int i = 0; i < dice; i++)
-            {
-                //randomly generate a number between the reroll value and the max value
-                temp = myRand.Next(reroll + 1, sides + 1);
-                rolls += temp.ToString();
-
-                if (i == dice - 1)
-                {
-                    rolls += ']';
-                }
-                else
-                {
-                    rolls += ',';
-                }
-
-                total += temp;
-
-                //open roll check (supports only 1d100 rolls)
-                if (dice == 1 && sides == 100 && chkOpenRoll.Checked)
-                {
-                    //continue open rolling until the result no longer qualifies
-                    if (temp >= openRollLimit)
-                    {
-                        //slide the open roll lower limit up until we reach 100
-                        if (openRollLimit < 100)
-                        {
-                            openRollLimit++;
-                        }
-
-                        //replace the end of the string with a comma instead of a bracket
-                        rolls.Insert(rolls.Length - 1, ",");
-
-                        //roll again and add the result
-                        total += Roll(1, 100);
-                    }
-                }
-            }
-
-            return total;
-        }
-
-        //handle dice rolling without rerolls enabled
-        private int Roll(int dice, int sides)
-        {
-            return Roll(dice, sides, 0);
-        }
-
-        //handle open rolls for anima system
-        private int OpenRoll(int dice, int sides)
-        {
-            //int openRollLimit = 90; //open roll check (supports only 1d100 rolls)
-            int total, temp;
-            if (dice != 1 || sides != 100 )
-            {
-                throw new DiceException("Only a single d100 can be used with open roll option", "Dice Format Error");
-            }
-            total = temp = myRand.Next(1, 101);
-            rolls += "[" + temp.ToString();
-            //continue open rolling until the result no longer qualifies
-            while (temp >= openRollLimit)
-            {
-                //slide the open roll lower limit up until we reach 100
-                if (openRollLimit < 100)
-                {
-                    openRollLimit++;
-                }
-
-                //roll again and add the result
-                temp = myRand.Next(1, 101);
-                total += temp;
-
-                //insert next roll into output string
-                rolls += "," + temp.ToString();
-            }
-            //insert ] to denote end of the open rolls
-            rolls += "]";
-
-            return total;
+            dice = new Dice();
         }
 
         //if the string has parenthesis, calculate the totals and output the resulting string
@@ -201,9 +81,9 @@ namespace DiceRoller
             {
                 index = temp.IndexOf('*');
 
-                for (begin = index - 1; begin > 0 && (char.IsDigit(temp[begin - 1]) || temp[begin] == '-'); begin--)
+                for (begin = index - 1; begin > 0 && (char.IsDigit(temp[begin - 1]) || temp[begin - 1] == '-'); begin--)
                 { }
-                for (end = index + 1; end < temp.Length - 1 && (char.IsDigit(temp[end + 1]) || temp[begin] == '-'); end++)
+                for (end = index + 1; end < temp.Length - 1 && (char.IsDigit(temp[end + 1]) || temp[begin + 1] == '-'); end++)
                 { }
 
                 first = int.Parse(temp.Substring(begin, index - begin));
@@ -217,9 +97,9 @@ namespace DiceRoller
             {
                 index = temp.IndexOf('/');
 
-                for (begin = index - 1; begin > 0 && (char.IsDigit(temp[begin - 1]) || temp[begin] == '-'); begin--)
+                for (begin = index - 1; begin > 0 && (char.IsDigit(temp[begin - 1]) || temp[begin - 1] == '-'); begin--)
                 { }
-                for (end = index + 1; end < temp.Length - 1 && (char.IsDigit(temp[end + 1]) || temp[begin] == '-'); end++)
+                for (end = index + 1; end < temp.Length - 1 && (char.IsDigit(temp[end + 1]) || temp[begin + 1] == '-'); end++)
                 { }
 
                 first = int.Parse(temp.Substring(begin, index - begin));
@@ -233,9 +113,9 @@ namespace DiceRoller
             {
                 index = temp.IndexOf('+');
 
-                for (begin = index - 1; begin > 0 && (char.IsDigit(temp[begin - 1]) || temp[begin] == '-'); begin--)
+                for (begin = index - 1; begin > 0 && (char.IsDigit(temp[begin - 1]) || temp[begin - 1] == '-'); begin--)
                 { }
-                for (end = index + 1; end < temp.Length - 1 && (char.IsDigit(temp[end + 1]) || temp[begin] == '-'); end++)
+                for (end = index + 1; end < temp.Length - 1 && (char.IsDigit(temp[end + 1]) || temp[begin + 1] == '-'); end++)
                 { }
 
                 first = int.Parse(temp.Substring(begin, index - begin));
@@ -251,11 +131,10 @@ namespace DiceRoller
         private string Calculate(string input)
         {
             //remove spaces and change to lowercase to make it easier/more predictable to work with
-            string str = input.ToLowerInvariant().Replace(" ", "");
+            string str = input.ToLower().Replace(" ", "");
             string label = "";
-            int sides, dice;
-            //hard coded starting value the lower limit of open rolls
-            openRollLimit = 90;
+            char[] operators = {'+','*','/','(',')','-'};
+            int start, end, temp;
 
             //don't process if there's nothing in the formula
             if (str.Length == 0)
@@ -279,83 +158,13 @@ namespace DiceRoller
                 return "Stored: " + input;
             }
 
-            //clear the rolls variable
-            rolls = "";
-
-            //parse through the string, character by character
-            for (int i = 0; i < str.Length; i++)
-            {
-                int begin, end;
-                if (str[i] != 'd' || !char.IsDigit(str, i + 1) || !char.IsDigit(str, i - 1))
-                {
-                    continue;
-                }
-                //get to the beginning of the dice variable
-                for (begin = i - 1; begin > 0 && char.IsDigit(str[begin - 1]); begin--)
-                { }
-
-                //get to the end of the dice variable
-                for (end = i + 1; end < str.Length - 1 && char.IsDigit(str[end + 1]); end++)
-                { }
-
-                //set variable to how many dice we want to roll
-                dice = int.Parse(str.Substring(begin, i - begin));
-
-                //set variable to the size of the dice we want to roll
-                sides = int.Parse(str.Substring(i + 1, end - i));
-
-                //parse extra syntax
-                if (end < str.Length - 1 && char.IsLetter(str[end + 1]))
-                {
-                    i = end + 1;
-                    switch (str[i])
-                    {
-                        case 'r': //re-roll syntax
-                            for (end = i + 1; end < str.Length && char.IsDigit(str[end]); end++)
-                            { }
-                            --end;
-                            //if the r doesn't have a number after it, default to reroll 1s
-                            if (end == i)
-                            {
-                                //remove the string so that it won't get parsed again
-                                str = str.Remove(begin, end - begin + 1);
-                                str = str.Insert(begin, Roll(dice, sides,1).ToString());
-                            }
-                            else
-                            {
-                                //get the number after the 'r' character and assign it to the index integer
-                                i = int.Parse(str.Substring(i+1,end-i));
-                                //remove the string so that it won't get parsed again
-                                str = str.Remove(begin, end - begin + 1);
-                                //replace this part of the formula with the number result (using the reroll value defined)
-                                str = str.Insert(begin, Roll(dice, sides, i).ToString());
-                            }
-                            break;
-                        case 'o':   //open rolls
-                            //remove the string so that it won't get parsed again
-                            str = str.Remove(begin, end - begin + 2);
-                            //replace this part of the formula with the number result using open rolls
-                            str = str.Insert(begin, OpenRoll(dice, sides).ToString());
-                            break;
-                        default:
-                            throw new DiceException("Unrecognized modifier on dice roll", "Dice Format Error");
-                    }
-                }
-                else
-                {
-                    //remove the string so that it won't get parsed again
-                    str = str.Remove(begin, end - begin + 1);
-
-                    str = str.Insert(begin, Roll(dice, sides).ToString());
-                }
-                i = begin;
-            }
+            dice.Clear();
 
             //handle variables called in the formula
             for (int i = 0; i < gridFormulas.Rows.Count; i++)
             {
                 //if a variable name exists in the formula and the label is not the same as the value
-                if (str.ToLower().Contains(gridFormulas.Rows[i].Cells[0].Value.ToString().ToLower()) &&
+                if (str.Contains(gridFormulas.Rows[i].Cells[0].Value.ToString().ToLower()) &&
                     gridFormulas.Rows[i].Cells[0].Value.ToString().ToLower() != gridFormulas.Rows[i].Cells[1].Value.ToString().ToLower())
                 {
                     //replace it with the string stored for that label
@@ -363,21 +172,49 @@ namespace DiceRoller
                 }
             }
 
+            for (start = 0; start < str.Length; start++)
+            {
+                start = str.IndexOf('d', start);
+                if (start == -1)
+                {
+                    break;
+                }
+                for (start--; start >= 0 && !operators.Contains(str[start]); start--)
+                { }
+                //start = stupid_string.LastIndexOfAny(operators, 0, start);
+                start++;
+                end = str.IndexOfAny(operators, start);
+                if (end == -1)
+                {
+                    end = str.Length;
+                }
+                end -= start;
+                temp = dice.Roll(str.Substring(start, end));
+                str = str.Remove(start, end).Insert(start, temp.ToString());
+            }
+
             string stupid_string = str;
             //convert subtraction operations into additions of negative numbers
             for (int i = 1; i < stupid_string.Length; i++)
             {
                 if (stupid_string[i] == '-' && stupid_string[i - 1] != '*' &&
-                    stupid_string[i - 1] != '/' && stupid_string[i - 1] != '+')
+                    stupid_string[i - 1] != '/' && stupid_string[i - 1] != '+' && stupid_string[i - 1] != '(')
                 {
                     stupid_string = stupid_string.Insert(i++, "+");
                 }
             }
 
+            for (int i = 0; i < stupid_string.Length; i++)
+            {
+                if (char.IsLetter(stupid_string[i]))
+                {
+                    throw new Exception("Invalid formula");
+                }
+            }
+
             //run the calculations and assemble the string for output
             str += " = " + Calc(stupid_string + ")");
-            input += ": " + rolls + "->" + System.Environment.NewLine + str;
-
+            input += ": " + dice.RollResults + "->" + System.Environment.NewLine + str;
             return input;
         }
 
@@ -387,11 +224,11 @@ namespace DiceRoller
             gridHistory.Rows.Add(input);
 
             //check for open rolls
-            if (openRollLimit > 90)
+            /*if (openRollLimit > 90)
             {
                 //highlight the row
                 gridHistory.Rows[gridHistory.Rows.Count - 1].Cells[0].Style.BackColor = Color.Green;
-            }
+            }*/
         }
 
         //handle special keys in the input
