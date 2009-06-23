@@ -18,20 +18,27 @@ namespace DiceRoller
          * Fix Highlighting text for open rolls, etc.
          * Debug new code
          */
-        private Random myRand;          //random generator
         private string lastinput;       //track the last formula used
         private Dice dice;
 
         public MainForm()
         {
             InitializeComponent();
-            myRand = new Random();
             lastinput = "";
             dice = new Dice();
         }
 
+        public static double Evaluate(string expression)
+        {
+            return (double)new System.Xml.XPath.XPathDocument
+            (new System.IO.StringReader("<r/>")).CreateNavigator().Evaluate
+            (string.Format("number({0})", new
+            System.Text.RegularExpressions.Regex(@"([\+\-\*])").Replace(expression, " ${1} ")
+.Replace("/", " div ").Replace("%", " mod ")));
+        }
+
         //if the string has parenthesis, calculate the totals and output the resulting string
-        private string Calc(string str)
+        /*private string Calc(string str)
         {
             string temp;
             int begin, end, first, second, index;
@@ -125,7 +132,7 @@ namespace DiceRoller
             }
 
             return temp + str;
-        }
+        }*/
 
         //main parsing/calculating function
         private string Calculate(string input)
@@ -133,7 +140,7 @@ namespace DiceRoller
             //remove spaces and change to lowercase to make it easier/more predictable to work with
             string str = input.ToLower().Replace(" ", "");
             string label = "";
-            char[] operators = {'+','*','/','(',')','-'};
+            char[] operators = {'+','*','/','(',')','-','%'};
             int start, end, temp;
 
             //don't process if there's nothing in the formula
@@ -181,7 +188,7 @@ namespace DiceRoller
                 }
                 for (start--; start >= 0 && !operators.Contains(str[start]); start--)
                 { }
-                //start = stupid_string.LastIndexOfAny(operators, 0, start);
+                //start = tempstr.LastIndexOfAny(operators, 0, start);
                 start++;
                 end = str.IndexOfAny(operators, start);
                 if (end == -1)
@@ -193,27 +200,41 @@ namespace DiceRoller
                 str = str.Remove(start, end).Insert(start, temp.ToString());
             }
 
-            string stupid_string = str;
+            string tempstr = str;
             //convert subtraction operations into additions of negative numbers
-            for (int i = 1; i < stupid_string.Length; i++)
+            for (int i = 1; i < tempstr.Length; i++)
             {
-                if (stupid_string[i] == '-' && stupid_string[i - 1] != '*' &&
-                    stupid_string[i - 1] != '/' && stupid_string[i - 1] != '+' && stupid_string[i - 1] != '(')
+                if (tempstr[i] == '-' && tempstr[i - 1] != '*' &&
+                    tempstr[i - 1] != '/' && tempstr[i - 1] != '+' && tempstr[i - 1] != '(')
                 {
-                    stupid_string = stupid_string.Insert(i++, "+");
+                    tempstr = tempstr.Insert(i++, "+");
                 }
             }
 
-            for (int i = 0; i < stupid_string.Length; i++)
+            for (int i = 0; i < tempstr.Length; i++)
             {
-                if (char.IsLetter(stupid_string[i]))
+                if ( !char.IsDigit(tempstr[i]) && !operators.Contains(tempstr[i]) )
                 {
                     throw new Exception("Invalid formula");
                 }
             }
 
             //run the calculations and assemble the string for output
-            str += " = " + Calc(stupid_string + ")");
+            //str += " = " + Calc(tempstr + ")");
+            
+            //handle n(formula)...multiply
+            for (int i = 1 ; i < tempstr.Length - 1 ; i++ )
+            {
+                if (tempstr[i] == '(' && char.IsDigit(tempstr[i - 1]))
+                {
+                    tempstr = tempstr.Insert(i, "*");
+                }
+                if (tempstr[i] == ')' && char.IsDigit(tempstr[i + 1]))
+                {
+                    tempstr = tempstr.Insert(i + 1, "*");
+                }
+            }
+            str += " = " + Evaluate(tempstr);
             input += ": " + dice.RollResults + "->" + System.Environment.NewLine + str;
             return input;
         }
