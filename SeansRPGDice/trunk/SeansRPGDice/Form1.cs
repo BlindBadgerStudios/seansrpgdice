@@ -244,6 +244,8 @@ namespace DiceRoller
         {
             gridHistory.Rows.Add(input);
 
+            //compare the number of dice rolled to the number of dice requested to tell open rolls
+
             //check for open rolls
             /*if (openRollLimit > 90)
             {
