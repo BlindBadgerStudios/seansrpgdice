@@ -115,7 +115,7 @@ namespace DiceRoller
                 string rollme = str.Substring(start, end);
 
                 //open roll checkbox check (only on d100)
-                if (chkOpenRoll.Checked && rollme.Contains("100"))
+                if (chkOpenRoll.Checked && rollme.Contains("d100"))
                 {
                     //append the open roll operator
                     rollme += "o";
