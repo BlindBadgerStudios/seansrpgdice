@@ -52,6 +52,7 @@ namespace DiceRoller
             return m + 1 + (int)(BitConverter.ToUInt32(temp,0) % (n - m));
         }
 
+        //Todo later?
         private void Parse(string str, ref int dice, ref int sides, ref int reroll, ref int drop)
         {
         }
@@ -74,10 +75,12 @@ namespace DiceRoller
             roll_results = "";
         }
 
-
+        //roll dice according to the formula input (str)
         public int Roll(string str)
         {
             int dice, sides, reroll, index, drop, total = 0;
+
+            //default open rolls to off
             bool OpenRoll = false;
             List<int> rolls = new List<int>();
 
@@ -91,14 +94,18 @@ namespace DiceRoller
             drop = int.Parse("0" + m.Groups["drop"].Value);
             reroll = int.Parse("0" + m.Groups["reroll"].Value);
             OpenRoll = (m.Groups["open"].Length == 1);
+
+            //error handling: infinite looping
             if (drop >= dice)
             {
                 throw new DiceException("The number of dice to drop cannot be greater than the number of dice rolled", "Dice Format Error");
             }
+            //error handling: only support open rolls on 1d100
             if ( OpenRoll && (dice != 1 || sides != 100))
             {
                 throw new DiceException("Only a single d100 can be used with open roll option", "Dice Format Error");
             }
+            //error handling: infinite looping
             if (reroll >= sides)
             {
                 throw new DiceException("Reroll value must be less than the number of sides on the die", "Dice Format Error");
@@ -149,6 +156,8 @@ namespace DiceRoller
                         throw new DiceException("Invalid modifier on dice roll: " + str[0] + " is unrecognized", "Dice Format Error");
                 }
             }*/
+
+            //roll dice, accounting for open rolls
             for (index = 0; index < dice ; index++)
             {
                 rolls.Add( Roll(sides, reroll) );
@@ -157,17 +166,24 @@ namespace DiceRoller
                     index--;
                 }
             }
+
+            //drop lowest rolls
             for (index = 0; index < drop ; index++)
             {
                 rolls.Remove(rolls.Min());
             }
+
             roll_results += "[";
+
+            //put all the rolls together in a string and add them up
             for (index = 0; index < rolls.Count - 1 ; index++)
             {
                 roll_results += rolls[index] + ",";
                 total += rolls[index];
             }
+
             roll_results += rolls[index] + "]";
+
             total += rolls[index];
             return total;
         }
