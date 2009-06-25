@@ -118,7 +118,7 @@ namespace DiceRoller
                 if (chkOpenRoll.Checked && rollme.Contains("d100"))
                 {
                     //append the open roll operator
-                    rollme += "o";
+                    rollme = rollme.Insert(rollme.IndexOf("d100")+4,"o");
                 }
 
                 //roll the dice and get a resulting number
