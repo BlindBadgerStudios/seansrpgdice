@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 using System.IO;
 
@@ -32,16 +33,29 @@ namespace DiceRoller
     class Dice
     {
         private string roll_results;
-        private static RNGCryptoServiceProvider gen = new RNGCryptoServiceProvider();
+        private static RNGCryptoServiceProvider gen;
+        private static Regex dice_parse;
         public Dice()
         {
+            roll_results = "";
+            gen = new RNGCryptoServiceProvider();
+            dice_parse = new Regex("^(?<dice>\\d+)d(?<sides>\\d+)(r(?<reroll>\\d+)|d(?<drop>\\d+)|(?<open>o))*$",RegexOptions.Compiled);
         }
-
-        private int Roll(int sides, int reroll)
+        //Rolls a single die of n sides, while allowing for rerolls for a result less than or equal to m;
+        private int Roll(int n, int m)
         {
             byte[] temp = new byte[4];
             gen.GetBytes(temp);
-            return reroll + 1 + Math.Abs(BitConverter.ToInt32(temp,0)) % (sides - reroll);
+            return m + 1 + (int)(BitConverter.ToUInt32(temp,0) % (n - m));
+        }
+
+        private void Parse(string str, ref int dice, ref int sides, ref int reroll, ref int drop)
+        {
+        }
+
+        public bool IsDice(string dice)
+        {
+            return dice_parse.IsMatch(dice);
         }
 
         public string RollResults
@@ -56,11 +70,34 @@ namespace DiceRoller
 
         public int Roll(string str)
         {
-            int dice, sides, reroll = 0, index, drop = 0, total = 0;
+            int dice, sides, reroll, index, drop, total = 0;
             bool OpenRoll = false;
             List<int> rolls = new List<int>();
 
-            index = str.IndexOf('d');
+            if (!dice_parse.IsMatch(str))
+            {
+                throw new DiceException("Dice expression is unrecognized", "Dice Format Error");
+            }
+            Match m = dice_parse.Match(str);
+            dice = int.Parse(m.Groups["dice"].Value);
+            sides = int.Parse(m.Groups["sides"].Value);
+            drop = int.Parse("0" + m.Groups["drop"].Value);
+            reroll = int.Parse("0" + m.Groups["reroll"].Value);
+            OpenRoll = (m.Groups["open"].Length == 1);
+            if (drop >= dice)
+            {
+                throw new DiceException("The number of dice to drop cannot be greater than the number of dice rolled", "Dice Format Error");
+            }
+            if ( OpenRoll && (dice != 1 || sides != 100))
+            {
+                throw new DiceException("Only a single d100 can be used with open roll option", "Dice Format Error");
+            }
+            if (reroll >= sides)
+            {
+                throw new DiceException("Reroll value must be less than the number of sides on the die", "Dice Format Error");
+            }
+
+            /*index = str.IndexOf('d');
             dice = int.Parse(str.Substring(0, index));
             str = str.Substring(index + 1);
             for (index = 0 ; index < str.Length && char.IsDigit(str[index]); index++)
@@ -104,7 +141,7 @@ namespace DiceRoller
                     default:
                         throw new DiceException("Invalid modifier on dice roll: " + str[0] + " is unrecognized", "Dice Format Error");
                 }
-            }
+            }*/
             for (index = 0; index < dice ; index++)
             {
                 rolls.Add( Roll(sides, reroll) );
