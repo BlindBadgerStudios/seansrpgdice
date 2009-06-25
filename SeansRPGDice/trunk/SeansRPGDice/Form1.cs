@@ -28,6 +28,7 @@ namespace DiceRoller
             dice = new Dice();
         }
 
+        //parse and replace the symbols in the string  with strings using regex
         public static double Evaluate(string expression)
         {
             return (double)new System.Xml.XPath.XPathDocument
@@ -36,103 +37,6 @@ namespace DiceRoller
             System.Text.RegularExpressions.Regex(@"([\+\-\*])").Replace(expression, " ${1} ")
 .Replace("/", " div ").Replace("%", " mod ")));
         }
-
-        //if the string has parenthesis, calculate the totals and output the resulting string
-        /*private string Calc(string str)
-        {
-            string temp;
-            int begin, end, first, second, index;
-
-            //handle parenthesis
-            if (str.Contains('('))
-            {
-                //put the marker at the beginning of the parenthesis
-                index = str.IndexOf('(');
-
-                if (char.IsDigit(str[index - 1]))
-                {
-                    str = str.Insert(index++, "*");
-                }
-
-                //recurse to calculate what is within the parenthesis first
-                str = str.Substring(0, index) + Calc(str.Substring(index + 1));
-            }
-
-            //ensure the end parenthesis exists
-            if (!str.Contains(')'))
-            {
-                throw new DiceException("Parenthesis do not match", "Invalid Formula");
-            }
-
-            //set marker at the end parenthesis
-            index = str.IndexOf(')');
-
-            //get just what is within the parenthesis
-            temp = str.Substring(0, index);
-
-            //handle n(formula)...multiply
-            if (index == str.Length - 1)
-            {
-                str = "";
-            }
-            else
-            {
-                if (char.IsDigit(str[index + 1]))
-                    str = str.Insert(index + 1, "*");
-
-                str = str.Substring(index + 1);
-            }
-
-            //multiply
-            while (temp.Contains('*'))
-            {
-                index = temp.IndexOf('*');
-
-                for (begin = index - 1; begin > 0 && (char.IsDigit(temp[begin - 1]) || temp[begin - 1] == '-'); begin--)
-                { }
-                for (end = index + 1; end < temp.Length - 1 && (char.IsDigit(temp[end + 1]) || temp[begin + 1] == '-'); end++)
-                { }
-
-                first = int.Parse(temp.Substring(begin, index - begin));
-                second = int.Parse(temp.Substring(index + 1, end - index));
-                temp = temp.Remove(begin, end - begin + 1);
-                temp = temp.Insert(begin, (first * second).ToString());
-            }
-
-            //divide
-            while (temp.Contains('/'))
-            {
-                index = temp.IndexOf('/');
-
-                for (begin = index - 1; begin > 0 && (char.IsDigit(temp[begin - 1]) || temp[begin - 1] == '-'); begin--)
-                { }
-                for (end = index + 1; end < temp.Length - 1 && (char.IsDigit(temp[end + 1]) || temp[begin + 1] == '-'); end++)
-                { }
-
-                first = int.Parse(temp.Substring(begin, index - begin));
-                second = int.Parse(temp.Substring(index + 1, end - index));
-                temp = temp.Remove(begin, end - begin + 1);
-                temp = temp.Insert(begin, (first / second).ToString());
-            }
-
-            //add (which also handles subtract)
-            while (temp.Contains('+'))
-            {
-                index = temp.IndexOf('+');
-
-                for (begin = index - 1; begin > 0 && (char.IsDigit(temp[begin - 1]) || temp[begin - 1] == '-'); begin--)
-                { }
-                for (end = index + 1; end < temp.Length - 1 && (char.IsDigit(temp[end + 1]) || temp[begin + 1] == '-'); end++)
-                { }
-
-                first = int.Parse(temp.Substring(begin, index - begin));
-                second = int.Parse(temp.Substring(index + 1, end - index));
-                temp = temp.Remove(begin, end - begin + 1);
-                temp = temp.Insert(begin, (first + second).ToString());
-            }
-
-            return temp + str;
-        }*/
 
         //main parsing/calculating function
         private string Calculate(string input)
@@ -179,28 +83,53 @@ namespace DiceRoller
                 }
             }
 
+            //parse through the string character by character for dice rolls and process them
             for (start = 0; start < str.Length; start++)
             {
+                //set the start variable to the 'd' chracter
                 start = str.IndexOf('d', start);
+                //if there's no dice, move on
                 if (start == -1)
                 {
                     break;
                 }
+
+                //move the start variable back until it reaches a non-number
                 for (start--; start >= 0 && !operators.Contains(str[start]); start--)
                 { }
                 //start = tempstr.LastIndexOfAny(operators, 0, start);
                 start++;
+
+                //set the end variable to the next operator
                 end = str.IndexOfAny(operators, start);
+
+                //if there isn't any more operators, set it to the end of the string
                 if (end == -1)
                 {
                     end = str.Length;
                 }
+
+                //make the end variable the length of the dice variable
                 end -= start;
-                temp = dice.Roll(str.Substring(start, end));
+
+                string rollme = str.Substring(start, end);
+
+                //open roll checkbox check (only on d100)
+                if (chkOpenRoll.Checked && rollme.Contains("100"))
+                {
+                    //append the open roll operator
+                    rollme += "o";
+                }
+
+                //roll the dice and get a resulting number
+                temp = dice.Roll(rollme);
+
+                //replace the dice variable with the result
                 str = str.Remove(start, end).Insert(start, temp.ToString());
             }
 
             string tempstr = str;
+
             //convert subtraction operations into additions of negative numbers
             for (int i = 1; i < tempstr.Length; i++)
             {
@@ -211,18 +140,16 @@ namespace DiceRoller
                 }
             }
 
+            //check every character of the string for forbidden characters
             for (int i = 0; i < tempstr.Length; i++)
             {
-                if ( !char.IsDigit(tempstr[i]) && !operators.Contains(tempstr[i]) )
+                if ( !char.IsDigit(tempstr[i]) && !operators.Contains(tempstr[i]) && !(tempstr[i] == '.') )
                 {
                     throw new Exception("Invalid formula");
                 }
             }
-
-            //run the calculations and assemble the string for output
-            //str += " = " + Calc(tempstr + ")");
             
-            //handle n(formula)...multiply
+            //handle n(formula) multiplication...insert a '*'
             for (int i = 1 ; i < tempstr.Length - 1 ; i++ )
             {
                 if (tempstr[i] == '(' && char.IsDigit(tempstr[i - 1]))
@@ -234,7 +161,11 @@ namespace DiceRoller
                     tempstr = tempstr.Insert(i + 1, "*");
                 }
             }
+
+            //run the calculations and get the total
             str += " = " + Evaluate(tempstr);
+
+            //assemble the string to output
             input += ": " + dice.RollResults + "->" + System.Environment.NewLine + str;
             return input;
         }
@@ -245,13 +176,6 @@ namespace DiceRoller
             gridHistory.Rows.Add(input);
 
             //compare the number of dice rolled to the number of dice requested to tell open rolls
-
-            //check for open rolls
-            /*if (openRollLimit > 90)
-            {
-                //highlight the row
-                gridHistory.Rows[gridHistory.Rows.Count - 1].Cells[0].Style.BackColor = Color.Green;
-            }*/
         }
 
         //handle special keys in the input
@@ -298,13 +222,12 @@ namespace DiceRoller
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //insert about box here
-            MessageBox.Show("This program created by Sean Wells." + System.Environment.NewLine 
+            MessageBox.Show("This program created by Sean Wells and Thomas Wild." + System.Environment.NewLine 
                 + "Send feedback to <codemonk84@gmail.com>" + System.Environment.NewLine
                 + System.Environment.NewLine 
                 + "Extra Thanks to..." + System.Environment.NewLine 
                 + "Aaron Biegalski" + System.Environment.NewLine
                 + "Trevor Hoagland" + System.Environment.NewLine
-                + "Thomas Wild" + System.Environment.NewLine 
                 , "About...");
         }
 
@@ -318,7 +241,10 @@ namespace DiceRoller
                 "2d6" + System.Environment.NewLine +
                 "6d6+24-10/2 (modifiers are supported)" + System.Environment.NewLine +
                 "10d4+2d6-5+3/2 (multiple dice sets are supported)" + System.Environment.NewLine +
-                "1d100*1.1 (decimals are supported)" + System.Environment.NewLine + 
+                "1d100*1.1 (decimals are supported)" + System.Environment.NewLine +
+                "10d4+(2d6-5)+3/2 (parenthesis sets are supported)" + System.Environment.NewLine +
+                "cha = 18 (labelled saving of formulas are supported)" + System.Environment.NewLine +
+                "1d20+cha (using labels to reference saved formulas are supported)" + System.Environment.NewLine +
                 System.Environment.NewLine + 
                 "You may add as many modifiers and dice sets as you wish.", "Instructions");
         }
