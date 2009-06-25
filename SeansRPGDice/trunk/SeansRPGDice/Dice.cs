@@ -35,11 +35,13 @@ namespace DiceRoller
         private string roll_results;
         private static RNGCryptoServiceProvider gen;
         private static Regex dice_parse;
+        private int roll_count;
 
         //initialize variables
         public Dice()
         {
             roll_results = "";
+            roll_count = 0;
             gen = new RNGCryptoServiceProvider();
             dice_parse = new Regex("^(?<dice>\\d+)d(?<sides>\\d+)(r(?<reroll>\\d+)|d(?<drop>\\d+)|(?<open>o))*$",RegexOptions.Compiled);
         }
@@ -69,10 +71,17 @@ namespace DiceRoller
             get { return roll_results; }
         }
 
+        //return how many rolls have occured since initialization or the last clear() command
+        public int RollCount
+        {
+            get { return roll_count; }
+        }
+
         //clear the results of the last rolls
         public void Clear()
         {
             roll_results = "";
+            roll_count = 0;
         }
 
         //roll dice according to the formula input (str)
@@ -165,6 +174,9 @@ namespace DiceRoller
                 {
                     index--;
                 }
+
+                //increment the number of rolls performed completely
+                roll_count++;
             }
 
             //drop lowest rolls
@@ -185,6 +197,7 @@ namespace DiceRoller
             roll_results += rolls[index] + "]";
 
             total += rolls[index];
+
             return total;
         }
     }
