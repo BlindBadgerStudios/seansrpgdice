@@ -35,12 +35,15 @@ namespace DiceRoller
         private string roll_results;
         private static RNGCryptoServiceProvider gen;
         private static Regex dice_parse;
+
+        //initialize variables
         public Dice()
         {
             roll_results = "";
             gen = new RNGCryptoServiceProvider();
             dice_parse = new Regex("^(?<dice>\\d+)d(?<sides>\\d+)(r(?<reroll>\\d+)|d(?<drop>\\d+)|(?<open>o))*$",RegexOptions.Compiled);
         }
+
         //Rolls a single die of n sides, while allowing for rerolls for a result less than or equal to m;
         private int Roll(int n, int m)
         {
@@ -53,20 +56,24 @@ namespace DiceRoller
         {
         }
 
+        //check if the variable input fits the format of dice
         public bool IsDice(string dice)
         {
             return dice_parse.IsMatch(dice);
         }
 
+        //return the results of the last rolls
         public string RollResults
         {
             get { return roll_results; }
         }
 
+        //clear the results of the last rolls
         public void Clear()
         {
             roll_results = "";
         }
+
 
         public int Roll(string str)
         {
