@@ -20,12 +20,14 @@ namespace DiceRoller
          */
         private string lastinput;       //track the last formula used
         private Dice dice;
+        private Color highlight;
 
         public MainForm()
         {
             InitializeComponent();
             lastinput = "";
             dice = new Dice();
+            highlight = Color.White;
         }
 
         //parse and replace the symbols in the string  with strings using regex
@@ -46,6 +48,7 @@ namespace DiceRoller
             string label = "";
             char[] operators = {'+','*','/','(',')','-','%'};
             int start, end, temp;
+
 
             //don't process if there's nothing in the formula
             if (str.Length == 0)
@@ -165,6 +168,12 @@ namespace DiceRoller
             //run the calculations and get the total
             str += " = " + Evaluate(tempstr);
 
+            //check that open rolls are enabled and that an open roll occured
+            if ((input.Contains('o') || chkOpenRoll.Checked) && dice.RollCount > 1)
+            {
+                highlight = Color.Green;
+            }
+
             //assemble the string to output
             input += ": " + dice.RollResults + "->" + System.Environment.NewLine + str;
             return input;
@@ -173,9 +182,12 @@ namespace DiceRoller
         //add data to roll history datagridview and highlight if an open roll occured
         private void addHistory(string input)
         {
+            //add string to the main grid
             gridHistory.Rows.Add(input);
-
-            //compare the number of dice rolled to the number of dice requested to tell open rolls
+            //set the background color, changes only if set to something different by another function
+            gridHistory.Rows[gridHistory.Rows.Count - 1].Cells[0].Style.BackColor = highlight;
+            //set the highlight color back to default
+            highlight = Color.White;
         }
 
         //handle special keys in the input
