@@ -291,6 +291,7 @@
             this.gridFormulas.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.gridFormulas.Size = new System.Drawing.Size(151, 273);
             this.gridFormulas.TabIndex = 9;
+            this.gridFormulas.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.gridFormulas_UserDeletingRow);
             this.gridFormulas.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridFormulas_CellDoubleClick);
             // 
             // colFormula

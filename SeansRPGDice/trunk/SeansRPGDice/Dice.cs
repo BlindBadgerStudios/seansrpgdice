@@ -32,20 +32,16 @@ namespace DiceRoller
     //Dice class, this handles all the math for rolling dice.
     class Dice
     {
-        private string roll_results;
+        private List<List<int> > roll_results;
         private static RNGCryptoServiceProvider gen;
         private static Regex dice_parse;
-        private int roll_count;
-
-        //initialize variables
         public Dice()
         {
-            roll_results = "";
-            roll_count = 0;
+            roll_results = new List<List<int>>();
             gen = new RNGCryptoServiceProvider();
-            dice_parse = new Regex("^(?<dice>\\d+)d(?<sides>\\d+)(r(?<reroll>\\d+)|d(?<drop>\\d+)|(?<open>o))*$",RegexOptions.Compiled);
+            dice_parse = new Regex("\\b(?<dice>(\\d)+)d(?<sides>\\d+)(r(?<reroll>\\d+)|d(?<drop>\\d+)|(?<open>o))*\\b",
+                RegexOptions.Compiled ^ RegexOptions.RightToLeft);
         }
-
         //Rolls a single die of n sides, while allowing for rerolls for a result less than or equal to m;
         private int Roll(int n, int m)
         {
@@ -54,43 +50,86 @@ namespace DiceRoller
             return m + 1 + (int)(BitConverter.ToUInt32(temp,0) % (n - m));
         }
 
-        //Todo later?
-        private void Parse(string str, ref int dice, ref int sides, ref int reroll, ref int drop)
+        public int Roll(int dice, int sides, int reroll, int drop, bool OpenRoll)
         {
+            List<int> rolls = new List<int>();
+            int index;
+            if (drop >= dice)
+            {
+                throw new DiceException("The number of dice to drop cannot be greater than the number of dice rolled", "Dice Format Error");
+            }
+            if (OpenRoll && (dice != 1 || sides != 100))
+            {
+                throw new DiceException("Only a single d100 can be used with open roll option", "Dice Format Error");
+            }
+            if (reroll >= sides)
+            {
+                throw new DiceException("Reroll value must be less than the number of sides on the die", "Dice Format Error");
+            }
+
+            for (index = 0; index < dice; index++)
+            {
+                rolls.Add(Roll(sides, reroll));
+                if (OpenRoll && rolls[rolls.Count - 1] > 88 + rolls.Count)
+                {
+                    index--;
+                }
+            }
+            for (index = 0; index < drop; index++)
+            {
+                rolls.Remove(rolls.Min());
+            }
+
+            roll_results.Add(rolls);
+            return rolls.Sum();
         }
 
-        //check if the variable input fits the format of dice
+        public string RollAll( string str )
+        {
+            foreach (Match m in dice_parse.Matches(str))
+            {
+                str = str.Remove(m.Index, m.Value.Length).Insert(m.Index, Roll(int.Parse(m.Groups["dice"].Value),
+                    int.Parse(m.Groups["sides"].Value),int.Parse("0" + m.Groups["reroll"].Value),
+                    int.Parse("0" + m.Groups["drop"].Value),(m.Groups["open"].Length == 1)).ToString());
+            }
+            roll_results.Reverse();
+            return str;
+        }
+
         public bool IsDice(string dice)
         {
             return dice_parse.IsMatch(dice);
         }
 
-        //return the results of the last rolls
         public string RollResults
         {
-            get { return roll_results; }
+            get
+            {
+                string str = "";
+                foreach (List<int> result in roll_results)
+                {
+                    str += "[";
+                    for (int i = 0; i < result.Count; i++)
+                    {
+                        str += result[i].ToString();
+                        if (i != result.Count - 1)
+                        {
+                            str += ",";
+                        }
+                    }
+                    str += "]";
+                }
+                return str;
+            }
         }
 
-        //return how many rolls have occured since initialization or the last clear() command
-        public int RollCount
-        {
-            get { return roll_count; }
-        }
-
-        //clear the results of the last rolls
         public void Clear()
         {
-            roll_results = "";
-            roll_count = 0;
+            roll_results.Clear();
         }
 
-        //roll dice according to the formula input (str)
         public int Roll(string str)
         {
-            int dice, sides, reroll, index, drop, total = 0;
-
-            //default open rolls to off
-            bool OpenRoll = false;
             List<int> rolls = new List<int>();
 
             if (!dice_parse.IsMatch(str))
@@ -98,107 +137,9 @@ namespace DiceRoller
                 throw new DiceException("Dice expression is unrecognized", "Dice Format Error");
             }
             Match m = dice_parse.Match(str);
-            dice = int.Parse(m.Groups["dice"].Value);
-            sides = int.Parse(m.Groups["sides"].Value);
-            drop = int.Parse("0" + m.Groups["drop"].Value);
-            reroll = int.Parse("0" + m.Groups["reroll"].Value);
-            OpenRoll = (m.Groups["open"].Length == 1);
-
-            //error handling: infinite looping
-            if (drop >= dice)
-            {
-                throw new DiceException("The number of dice to drop cannot be greater than the number of dice rolled", "Dice Format Error");
-            }
-            //error handling: only support open rolls on 1d100
-            if ( OpenRoll && (dice != 1 || sides != 100))
-            {
-                throw new DiceException("Only a single d100 can be used with open roll option", "Dice Format Error");
-            }
-            //error handling: infinite looping
-            if (reroll >= sides)
-            {
-                throw new DiceException("Reroll value must be less than the number of sides on the die", "Dice Format Error");
-            }
-
-            /*index = str.IndexOf('d');
-            dice = int.Parse(str.Substring(0, index));
-            str = str.Substring(index + 1);
-            for (index = 0 ; index < str.Length && char.IsDigit(str[index]); index++)
-            { }
-            sides = int.Parse(str.Substring(0, index));
-            str = str.Substring(index);
-
-            while (str.Length > 0)
-            {
-                switch (str[0])
-                {
-                    case 'r':
-                        for (index = 1; index < str.Length && char.IsDigit(str[index]); index++)
-                        { }
-                        reroll = int.Parse(str.Substring(1, index - 1));
-                        //ensure that we aren't rerolling infinitely
-                        if (reroll >= sides)
-                        {
-                            throw new DiceException("Reroll value must be less than the number of sides on the die", "Dice Format Error");
-                        }
-                        str = str.Substring(index);
-                        break;
-                    case 'o':
-                        if (dice != 1 || sides != 100)
-                        {
-                            throw new DiceException("Only a single d100 can be used with open roll option", "Dice Format Error");
-                        }
-                        str = str.Substring(1);
-                        OpenRoll = true;
-                        break;
-                    case 'd':
-                        for (index = 1; index < str.Length && char.IsDigit(str[index]); index++)
-                        { }
-                        drop = int.Parse(str.Substring(1, index - 1));
-                        if (drop >= dice)
-                        {
-                            throw new DiceException("", "Dice Format Error");
-                        }
-                        str = str.Substring(index);
-                        break;
-                    default:
-                        throw new DiceException("Invalid modifier on dice roll: " + str[0] + " is unrecognized", "Dice Format Error");
-                }
-            }*/
-
-            //roll dice, accounting for open rolls
-            for (index = 0; index < dice ; index++)
-            {
-                rolls.Add( Roll(sides, reroll) );
-                if (OpenRoll && rolls[rolls.Count - 1] > 88 + rolls.Count)
-                {
-                    index--;
-                }
-
-                //increment the number of rolls performed completely
-                roll_count++;
-            }
-
-            //drop lowest rolls
-            for (index = 0; index < drop ; index++)
-            {
-                rolls.Remove(rolls.Min());
-            }
-
-            roll_results += "[";
-
-            //put all the rolls together in a string and add them up
-            for (index = 0; index < rolls.Count - 1 ; index++)
-            {
-                roll_results += rolls[index] + ",";
-                total += rolls[index];
-            }
-
-            roll_results += rolls[index] + "]";
-
-            total += rolls[index];
-
-            return total;
+            return Roll(int.Parse(m.Groups["dice"].Value), int.Parse(m.Groups["sides"].Value),
+                int.Parse("0" + m.Groups["reroll"].Value), int.Parse("0" + m.Groups["drop"].Value),
+                (m.Groups["open"].Length == 1));
         }
     }
 }
