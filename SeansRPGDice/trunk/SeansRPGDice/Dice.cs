@@ -35,8 +35,11 @@ namespace DiceRoller
         private List<List<int> > roll_results;
         private static RNGCryptoServiceProvider gen;
         private static Regex dice_parse;
+        private int roll_count;
+
         public Dice()
         {
+            roll_count = 0;
             roll_results = new List<List<int>>();
             gen = new RNGCryptoServiceProvider();
             dice_parse = new Regex("\\b(?<dice>(\\d)+)d(?<sides>\\d+)(r(?<reroll>\\d+)|d(?<drop>\\d+)|(?<open>o))*\\b",
@@ -74,6 +77,10 @@ namespace DiceRoller
                 {
                     index--;
                 }
+
+                //increment the number of rolls performed completely
+                roll_count++;
+ 
             }
             for (index = 0; index < drop; index++)
             {
@@ -122,10 +129,18 @@ namespace DiceRoller
                 return str;
             }
         }
+        
+        //return how many rolls have occured since initialization or the last clear() command
+        public int RollCount
+        {
+            get { return roll_count; }
+        }
+ 
 
         public void Clear()
         {
             roll_results.Clear();
+            roll_count = 0;
         }
 
         public int Roll(string str)
