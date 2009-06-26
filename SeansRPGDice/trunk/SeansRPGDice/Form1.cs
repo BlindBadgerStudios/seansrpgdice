@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.IO;
 
@@ -20,24 +21,27 @@ namespace DiceRoller
          */
         private string lastinput;       //track the last formula used
         private Dice dice;
-        private Color highlight;
 
         public MainForm()
         {
             InitializeComponent();
             lastinput = "";
             dice = new Dice();
-            highlight = Color.White;
         }
 
-        //parse and replace the symbols in the string  with strings using regex
         public static double Evaluate(string expression)
         {
-            return (double)new System.Xml.XPath.XPathDocument
-            (new System.IO.StringReader("<r/>")).CreateNavigator().Evaluate
-            (string.Format("number({0})", new
-            System.Text.RegularExpressions.Regex(@"([\+\-\*])").Replace(expression, " ${1} ")
-.Replace("/", " div ").Replace("%", " mod ")));
+            try
+            {
+                return (double)new System.Xml.XPath.XPathDocument
+                (new System.IO.StringReader("<r/>")).CreateNavigator().Evaluate
+                (string.Format("number({0})", new Regex(@"([\+\-\*])").Replace(expression, " ${1} ")
+                .Replace("/", " div ").Replace("%", " mod ")));
+            }
+            catch
+            {
+                throw new DiceException("Unable to evaluate equation.","Format error in equation");
+            }
         }
 
         //main parsing/calculating function
@@ -46,9 +50,6 @@ namespace DiceRoller
             //remove spaces and change to lowercase to make it easier/more predictable to work with
             string str = input.ToLower().Replace(" ", "");
             string label = "";
-            char[] operators = {'+','*','/','(',')','-','%'};
-            int start, end, temp;
-
 
             //don't process if there's nothing in the formula
             if (str.Length == 0)
@@ -61,6 +62,10 @@ namespace DiceRoller
             {
                 //parse out the label into it's own variable
                 label = str.Substring(0, str.IndexOf('='));
+                if (label.Length < 1)
+                {
+                    throw new DiceException("Missing name in formula declaration", "Invalid Formula");
+                }
                 //remove the label from the string so that the roller functions don't get confused
                 str = str.Substring(str.IndexOf('=') + 1);
                 if (str.Contains(label))
@@ -68,91 +73,51 @@ namespace DiceRoller
                     throw new DiceException("Formula can not reference itself", "Invalid Formula");
                 }
                 //store formula in gridFormulas
-                gridFormulas.Rows.Add(label,str);
+                //gridFormulas.Rows.Add(label,str);
+                try
+                {
+                    Calculate(str);
+                }
+                catch (Exception ex)
+                {
+                    throw new DiceException(ex.Message,"Invalid Formula");
+                }
+                //store formula in gridFormulas
+                int index = 0;
+                for(  ; index < gridFormulas.Rows.Count ; index++ )
+                {
+                    if ((string)gridFormulas.Rows[index].Cells[0].Value == label)
+                    {
+                        gridFormulas.Rows[index].Cells[1].Value = str;
+                        break;
+                    }
+                }
+                if (index == gridFormulas.Rows.Count)
+                {
+                    gridFormulas.Rows.Add(label, str);
+                }
                 return "Stored: " + input;
             }
 
             dice.Clear();
 
-            //handle variables called in the formula
-            for (int i = 0; i < gridFormulas.Rows.Count; i++)
+            for (int i = gridFormulas.Rows.Count - 1 ; i >= 0 ; i-- )
             {
-                //if a variable name exists in the formula and the label is not the same as the value
-                if (str.Contains(gridFormulas.Rows[i].Cells[0].Value.ToString().ToLower()) &&
-                    gridFormulas.Rows[i].Cells[0].Value.ToString().ToLower() != gridFormulas.Rows[i].Cells[1].Value.ToString().ToLower())
+                str = Regex.Replace(str, "(\\b|(?<=\\d))" + gridFormulas.Rows[i].Cells[0].Value 
+                    + "\\b","(" + gridFormulas.Rows[i].Cells[1].Value + ")");
+            }
+            str = dice.RollAll(str);
+
+            foreach (char c in str)
+            {
+                if (char.IsLetter(c))
                 {
-                    //replace it with the string stored for that label
-                    str = str.Replace(gridFormulas.Rows[i].Cells[0].Value.ToString(), gridFormulas.Rows[i].Cells[1].Value.ToString());
+                    throw new Exception("Unrecognized variable in equation");
                 }
             }
-
-            //parse through the string character by character for dice rolls and process them
-            for (start = 0; start < str.Length; start++)
-            {
-                //set the start variable to the 'd' chracter
-                start = str.IndexOf('d', start);
-                //if there's no dice, move on
-                if (start == -1)
-                {
-                    break;
-                }
-
-                //move the start variable back until it reaches a non-number
-                for (start--; start >= 0 && !operators.Contains(str[start]); start--)
-                { }
-                //start = tempstr.LastIndexOfAny(operators, 0, start);
-                start++;
-
-                //set the end variable to the next operator
-                end = str.IndexOfAny(operators, start);
-
-                //if there isn't any more operators, set it to the end of the string
-                if (end == -1)
-                {
-                    end = str.Length;
-                }
-
-                //make the end variable the length of the dice variable
-                end -= start;
-
-                string rollme = str.Substring(start, end);
-
-                //open roll checkbox check (only on d100)
-                if (chkOpenRoll.Checked && rollme.Contains("d100"))
-                {
-                    //append the open roll operator
-                    rollme = rollme.Insert(rollme.IndexOf("d100")+4,"o");
-                }
-
-                //roll the dice and get a resulting number
-                temp = dice.Roll(rollme);
-
-                //replace the dice variable with the result
-                str = str.Remove(start, end).Insert(start, temp.ToString());
-            }
-
             string tempstr = str;
-
-            //convert subtraction operations into additions of negative numbers
-            for (int i = 1; i < tempstr.Length; i++)
-            {
-                if (tempstr[i] == '-' && tempstr[i - 1] != '*' &&
-                    tempstr[i - 1] != '/' && tempstr[i - 1] != '+' && tempstr[i - 1] != '(')
-                {
-                    tempstr = tempstr.Insert(i++, "+");
-                }
-            }
-
-            //check every character of the string for forbidden characters
-            for (int i = 0; i < tempstr.Length; i++)
-            {
-                if ( !char.IsDigit(tempstr[i]) && !operators.Contains(tempstr[i]) && !(tempstr[i] == '.') )
-                {
-                    throw new Exception("Invalid formula");
-                }
-            }
             
-            //handle n(formula) multiplication...insert a '*'
+            //handle n(formula)...multiply
             for (int i = 1 ; i < tempstr.Length - 1 ; i++ )
             {
                 if (tempstr[i] == '(' && char.IsDigit(tempstr[i - 1]))
@@ -164,17 +129,7 @@ namespace DiceRoller
                     tempstr = tempstr.Insert(i + 1, "*");
                 }
             }
-
-            //run the calculations and get the total
             str += " = " + Evaluate(tempstr);
-
-            //check that open rolls are enabled and that an open roll occured
-            if ((input.Contains('o') || chkOpenRoll.Checked) && dice.RollCount > 1)
-            {
-                highlight = Color.Green;
-            }
-
-            //assemble the string to output
             input += ": " + dice.RollResults + "->" + System.Environment.NewLine + str;
             return input;
         }
@@ -182,12 +137,16 @@ namespace DiceRoller
         //add data to roll history datagridview and highlight if an open roll occured
         private void addHistory(string input)
         {
-            //add string to the main grid
             gridHistory.Rows.Add(input);
-            //set the background color, changes only if set to something different by another function
-            gridHistory.Rows[gridHistory.Rows.Count - 1].Cells[0].Style.BackColor = highlight;
-            //set the highlight color back to default
-            highlight = Color.White;
+
+            //compare the number of dice rolled to the number of dice requested to tell open rolls
+
+            //check for open rolls
+            /*if (openRollLimit > 90)
+            {
+                //highlight the row
+                gridHistory.Rows[gridHistory.Rows.Count - 1].Cells[0].Style.BackColor = Color.Green;
+            }*/
         }
 
         //handle special keys in the input
@@ -234,12 +193,13 @@ namespace DiceRoller
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //insert about box here
-            MessageBox.Show("This program created by Sean Wells and Thomas Wild." + System.Environment.NewLine 
+            MessageBox.Show("This program created by Sean Wells." + System.Environment.NewLine 
                 + "Send feedback to <codemonk84@gmail.com>" + System.Environment.NewLine
                 + System.Environment.NewLine 
                 + "Extra Thanks to..." + System.Environment.NewLine 
                 + "Aaron Biegalski" + System.Environment.NewLine
                 + "Trevor Hoagland" + System.Environment.NewLine
+                + "Thomas Wild" + System.Environment.NewLine 
                 , "About...");
         }
 
@@ -253,10 +213,7 @@ namespace DiceRoller
                 "2d6" + System.Environment.NewLine +
                 "6d6+24-10/2 (modifiers are supported)" + System.Environment.NewLine +
                 "10d4+2d6-5+3/2 (multiple dice sets are supported)" + System.Environment.NewLine +
-                "1d100*1.1 (decimals are supported)" + System.Environment.NewLine +
-                "10d4+(2d6-5)+3/2 (parenthesis sets are supported)" + System.Environment.NewLine +
-                "cha = 18 (labelled saving of formulas are supported)" + System.Environment.NewLine +
-                "1d20+cha (using labels to reference saved formulas are supported)" + System.Environment.NewLine +
+                "1d100*1.1 (decimals are supported)" + System.Environment.NewLine + 
                 System.Environment.NewLine + 
                 "You may add as many modifiers and dice sets as you wish.", "Instructions");
         }
@@ -430,6 +387,43 @@ namespace DiceRoller
             if (e.KeyCode == Keys.Up && lastinput.Length > 0)
             {
                 txtInput.Text = lastinput;
+            }
+        }
+
+        private void gridFormulas_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        {
+            List<int> Dependencies = new List<int>();
+            Dependencies.Add(e.Row.Index);
+
+            for (int d = 0 ; d < Dependencies.Count; d++ )
+            {
+                //Regex reg = new Regex("(\\b|(?<=\\d))" + gridFormulas.Rows[Dependencies[d]].Cells[0].Value + "\\b");
+                for (int i = 0; i < gridFormulas.Rows.Count; i++)
+                {
+                    if (Regex.IsMatch((string)gridFormulas.Rows[i].Cells[1].Value,
+                        "(\\b|(?<=\\d))" + gridFormulas.Rows[Dependencies[d]].Cells[0].Value + "\\b"))
+                    {
+                        Dependencies.Add(i);
+                    }
+                }
+            }
+            if( Dependencies.Count == 1 )
+            {
+                return;
+            }
+            e.Cancel = true;
+            string str = "There are other formulas dependent upon this variable.\nDeleting "
+                + (string)e.Row.Cells[0].Value +
+                " will remove the other formulas as well.\nDo you wish to continue with this action?";
+            if (MessageBox.Show(str, "Error deleting variable", MessageBoxButtons.YesNo) == DialogResult.No)
+            {
+                return;
+            }
+            Dependencies.Sort();
+            Dependencies.Reverse();
+            foreach (int i in Dependencies)
+            {
+                gridFormulas.Rows.RemoveAt(i);
             }
         }
     }
