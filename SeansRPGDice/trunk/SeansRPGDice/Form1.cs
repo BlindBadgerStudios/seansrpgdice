@@ -171,6 +171,7 @@ namespace DiceRoller
             str += " = " + Evaluate(tempstr);
 
             //check that open rolls are enabled and that an open roll occured
+            //TODO: account for multiple dice in addition to the 1d100 when the openroll checkbox is checked.
             if ((rollme.Contains('o')) && dice.RollCount > 1)
             {
                 highlight = Color.Green;
