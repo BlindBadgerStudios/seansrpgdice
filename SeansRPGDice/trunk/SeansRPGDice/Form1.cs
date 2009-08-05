@@ -13,10 +13,8 @@ namespace DiceRoller
     public partial class MainForm : Form
     {
         /* TODO:
-         * More error checking
-         * ensure there is only one '=' character
-         * Fix Highlighting text for open rolls, etc.
-         * Debug new code
+         * Automatically check for updates
+         * Highlighting for crits and fumbles
          */
         private string lastinput;       //track the last formula used
         private Dice dice;
@@ -63,6 +61,13 @@ namespace DiceRoller
                 label = str.Substring(0, str.IndexOf('='));
                 //remove the label from the string so that the roller functions don't get confused
                 str = str.Substring(str.IndexOf('=') + 1);
+
+                //error check for invalid
+                if (str.Contains('='))
+                {
+                    throw new DiceException("Formula can only contain one '=' character", "Invalid Formula");
+                }
+
                 if (str.Contains(label))
                 {
                     throw new DiceException("Formula can not reference itself", "Invalid Formula");
