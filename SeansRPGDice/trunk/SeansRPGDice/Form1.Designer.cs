@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
             this.txtInput = new System.Windows.Forms.TextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -49,14 +49,13 @@
             this.instructionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.chkReroll = new System.Windows.Forms.CheckBox();
-            this.txtReroll = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.gridHistory = new System.Windows.Forms.DataGridView();
             this.colRolls = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.gridFormulas = new System.Windows.Forms.DataGridView();
             this.colFormula = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Formula = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lblHistory = new System.Windows.Forms.Label();
+            this.highlightingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridHistory)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridFormulas)).BeginInit();
@@ -164,7 +163,8 @@
             // campaignToolStripMenuItem
             // 
             this.campaignToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.chkOpenRoll});
+            this.chkOpenRoll,
+            this.highlightingToolStripMenuItem});
             this.campaignToolStripMenuItem.Name = "campaignToolStripMenuItem";
             this.campaignToolStripMenuItem.Size = new System.Drawing.Size(106, 20);
             this.campaignToolStripMenuItem.Text = "Campaign Options";
@@ -173,8 +173,9 @@
             // 
             this.chkOpenRoll.CheckOnClick = true;
             this.chkOpenRoll.Name = "chkOpenRoll";
-            this.chkOpenRoll.Size = new System.Drawing.Size(136, 22);
+            this.chkOpenRoll.Size = new System.Drawing.Size(152, 22);
             this.chkOpenRoll.Text = "Open Rolls";
+            this.chkOpenRoll.ToolTipText = "Enable open rolls for all the rolling performed.";
             // 
             // helpToolStripMenuItem
             // 
@@ -205,34 +206,6 @@
             this.aboutToolStripMenuItem1.Text = "About...";
             this.aboutToolStripMenuItem1.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
-            // chkReroll
-            // 
-            this.chkReroll.AutoSize = true;
-            this.chkReroll.Location = new System.Drawing.Point(12, 28);
-            this.chkReroll.Name = "chkReroll";
-            this.chkReroll.Size = new System.Drawing.Size(53, 17);
-            this.chkReroll.TabIndex = 3;
-            this.chkReroll.Text = "Reroll";
-            this.chkReroll.UseVisualStyleBackColor = true;
-            // 
-            // txtReroll
-            // 
-            this.txtReroll.Location = new System.Drawing.Point(60, 26);
-            this.txtReroll.Name = "txtReroll";
-            this.txtReroll.Size = new System.Drawing.Size(28, 20);
-            this.txtReroll.TabIndex = 5;
-            this.txtReroll.Text = "1";
-            this.txtReroll.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(89, 29);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 13);
-            this.label1.TabIndex = 7;
-            this.label1.Text = "and lower";
-            // 
             // gridHistory
             // 
             this.gridHistory.AllowUserToAddRows = false;
@@ -248,20 +221,20 @@
             this.gridHistory.ColumnHeadersVisible = false;
             this.gridHistory.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colRolls});
-            this.gridHistory.Location = new System.Drawing.Point(12, 52);
+            this.gridHistory.Location = new System.Drawing.Point(12, 40);
             this.gridHistory.Name = "gridHistory";
             this.gridHistory.RowHeadersVisible = false;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.gridHistory.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.gridHistory.RowsDefaultCellStyle = dataGridViewCellStyle11;
             this.gridHistory.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.gridHistory.Size = new System.Drawing.Size(268, 219);
+            this.gridHistory.Size = new System.Drawing.Size(268, 231);
             this.gridHistory.TabIndex = 8;
             // 
             // colRolls
             // 
             this.colRolls.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.colRolls.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.colRolls.DefaultCellStyle = dataGridViewCellStyle10;
             this.colRolls.HeaderText = "Result";
             this.colRolls.Name = "colRolls";
             this.colRolls.ReadOnly = true;
@@ -291,14 +264,13 @@
             this.gridFormulas.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.gridFormulas.Size = new System.Drawing.Size(151, 273);
             this.gridFormulas.TabIndex = 9;
-            this.gridFormulas.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.gridFormulas_UserDeletingRow);
             this.gridFormulas.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridFormulas_CellDoubleClick);
             // 
             // colFormula
             // 
             this.colFormula.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.colFormula.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.colFormula.DefaultCellStyle = dataGridViewCellStyle12;
             this.colFormula.HeaderText = "Saved (Double-click)";
             this.colFormula.MinimumWidth = 100;
             this.colFormula.Name = "colFormula";
@@ -314,16 +286,33 @@
             this.Formula.ReadOnly = true;
             this.Formula.Visible = false;
             // 
+            // lblHistory
+            // 
+            this.lblHistory.AutoSize = true;
+            this.lblHistory.Location = new System.Drawing.Point(9, 24);
+            this.lblHistory.Name = "lblHistory";
+            this.lblHistory.Size = new System.Drawing.Size(60, 13);
+            this.lblHistory.TabIndex = 10;
+            this.lblHistory.Text = "Roll History";
+            // 
+            // highlightingToolStripMenuItem
+            // 
+            this.highlightingToolStripMenuItem.Checked = true;
+            this.highlightingToolStripMenuItem.CheckOnClick = true;
+            this.highlightingToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.highlightingToolStripMenuItem.Name = "highlightingToolStripMenuItem";
+            this.highlightingToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.highlightingToolStripMenuItem.Text = "Highlighting";
+            this.highlightingToolStripMenuItem.ToolTipText = "Highlight Natural 20s or Open Rolls as well as Natural 1s and Fumbles";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(450, 305);
+            this.Controls.Add(this.lblHistory);
             this.Controls.Add(this.gridFormulas);
             this.Controls.Add(this.gridHistory);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.txtReroll);
-            this.Controls.Add(this.chkReroll);
             this.Controls.Add(this.txtInput);
             this.Controls.Add(this.menuStrip1);
             this.Name = "MainForm";
@@ -344,9 +333,6 @@
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.CheckBox chkReroll;
-        private System.Windows.Forms.TextBox txtReroll;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridView gridHistory;
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
@@ -365,6 +351,8 @@
         private System.Windows.Forms.ToolStripMenuItem chkOpenRoll;
         private System.Windows.Forms.DataGridViewTextBoxColumn colFormula;
         private System.Windows.Forms.DataGridViewTextBoxColumn Formula;
+        private System.Windows.Forms.Label lblHistory;
+        private System.Windows.Forms.ToolStripMenuItem highlightingToolStripMenuItem;
     }
 }
 
