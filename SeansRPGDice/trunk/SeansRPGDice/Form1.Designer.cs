@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.txtInput = new System.Windows.Forms.TextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -45,17 +45,18 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.campaignToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.chkOpenRoll = new System.Windows.Forms.ToolStripMenuItem();
+            this.highlightingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.instructionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.gridHistory = new System.Windows.Forms.DataGridView();
-            this.colRolls = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.gridFormulas = new System.Windows.Forms.DataGridView();
             this.colFormula = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Formula = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lblHistory = new System.Windows.Forms.Label();
-            this.highlightingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.colRolls = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colForm = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridHistory)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridFormulas)).BeginInit();
@@ -173,9 +174,19 @@
             // 
             this.chkOpenRoll.CheckOnClick = true;
             this.chkOpenRoll.Name = "chkOpenRoll";
-            this.chkOpenRoll.Size = new System.Drawing.Size(152, 22);
+            this.chkOpenRoll.Size = new System.Drawing.Size(140, 22);
             this.chkOpenRoll.Text = "Open Rolls";
             this.chkOpenRoll.ToolTipText = "Enable open rolls for all the rolling performed.";
+            // 
+            // highlightingToolStripMenuItem
+            // 
+            this.highlightingToolStripMenuItem.Checked = true;
+            this.highlightingToolStripMenuItem.CheckOnClick = true;
+            this.highlightingToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.highlightingToolStripMenuItem.Name = "highlightingToolStripMenuItem";
+            this.highlightingToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.highlightingToolStripMenuItem.Text = "Highlighting";
+            this.highlightingToolStripMenuItem.ToolTipText = "Highlight Natural 20s or Open Rolls as well as Natural 1s and Fumbles";
             // 
             // helpToolStripMenuItem
             // 
@@ -220,26 +231,16 @@
             this.gridHistory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.gridHistory.ColumnHeadersVisible = false;
             this.gridHistory.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colRolls});
+            this.colRolls,
+            this.colForm});
             this.gridHistory.Location = new System.Drawing.Point(12, 40);
             this.gridHistory.Name = "gridHistory";
             this.gridHistory.RowHeadersVisible = false;
-            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.gridHistory.RowsDefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.gridHistory.RowsDefaultCellStyle = dataGridViewCellStyle2;
             this.gridHistory.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.gridHistory.Size = new System.Drawing.Size(268, 231);
             this.gridHistory.TabIndex = 8;
-            // 
-            // colRolls
-            // 
-            this.colRolls.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.colRolls.DefaultCellStyle = dataGridViewCellStyle10;
-            this.colRolls.HeaderText = "Result";
-            this.colRolls.Name = "colRolls";
-            this.colRolls.ReadOnly = true;
-            this.colRolls.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.colRolls.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // gridFormulas
             // 
@@ -269,8 +270,8 @@
             // colFormula
             // 
             this.colFormula.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.colFormula.DefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.colFormula.DefaultCellStyle = dataGridViewCellStyle3;
             this.colFormula.HeaderText = "Saved (Double-click)";
             this.colFormula.MinimumWidth = 100;
             this.colFormula.Name = "colFormula";
@@ -295,15 +296,22 @@
             this.lblHistory.TabIndex = 10;
             this.lblHistory.Text = "Roll History";
             // 
-            // highlightingToolStripMenuItem
+            // colRolls
             // 
-            this.highlightingToolStripMenuItem.Checked = true;
-            this.highlightingToolStripMenuItem.CheckOnClick = true;
-            this.highlightingToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.highlightingToolStripMenuItem.Name = "highlightingToolStripMenuItem";
-            this.highlightingToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.highlightingToolStripMenuItem.Text = "Highlighting";
-            this.highlightingToolStripMenuItem.ToolTipText = "Highlight Natural 20s or Open Rolls as well as Natural 1s and Fumbles";
+            this.colRolls.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.colRolls.DefaultCellStyle = dataGridViewCellStyle1;
+            this.colRolls.HeaderText = "Result";
+            this.colRolls.Name = "colRolls";
+            this.colRolls.ReadOnly = true;
+            this.colRolls.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.colRolls.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // colForm
+            // 
+            this.colForm.HeaderText = "Formula";
+            this.colForm.Name = "colForm";
+            this.colForm.Visible = false;
             // 
             // MainForm
             // 
@@ -337,7 +345,6 @@
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.DataGridView gridFormulas;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colRolls;
         private System.Windows.Forms.ToolStripMenuItem instructionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem1;
@@ -353,6 +360,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Formula;
         private System.Windows.Forms.Label lblHistory;
         private System.Windows.Forms.ToolStripMenuItem highlightingToolStripMenuItem;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colRolls;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colForm;
     }
 }
 
