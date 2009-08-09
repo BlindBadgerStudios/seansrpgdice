@@ -14,16 +14,16 @@ namespace DiceRoller
     {
         /* TODO:
          * Automatically check for updates
-         * Highlighting for crits and fumbles
+         * Highlighting for fumbles
          */
-        private string lastinput;       //track the last formula used
-        private Dice dice;
-        private Color highlight;
+        private int histIndex;          //track the last formula used
+        private Dice dice;              //dice class to handle rolling and getting results
+        private Color highlight;        //what color to highlight a row
 
         public MainForm()
         {
             InitializeComponent();
-            lastinput = "";
+            histIndex = 0;
             dice = new Dice();
             highlight = Color.White;
         }
@@ -177,7 +177,7 @@ namespace DiceRoller
 
             //check that open rolls are enabled and that an open roll occured
             //TODO: account for multiple dice in addition to the 1d100 when the openroll checkbox is checked.
-            if ((rollme.Contains('o')) && dice.RollCount > 1)
+            if (((rollme.Contains('o')) && dice.RollCount > 1)||(dice.RollResults.Contains("20") && input.Contains("d20")))
             {
                 highlight = Color.Green;
             }
@@ -188,17 +188,17 @@ namespace DiceRoller
         }
 
         //add data to roll history datagridview and highlight if an open roll occured
-        private void addHistory(string input)
+        private void addHistory(string input, string orig)
         {
             //add string to the main grid
-            gridHistory.Rows.Add(input);
+            gridHistory.Rows.Add(input, orig);
             //set the background color, changes only if set to something different by another function
             gridHistory.Rows[gridHistory.Rows.Count - 1].Cells[0].Style.BackColor = highlight;
             //set the highlight color back to default
             highlight = Color.White;
         }
 
-        //handle special keys in the input
+        //handle enter key to submit the input
         private void txtInput_OnEnter(object sender, KeyPressEventArgs e)
         {
             switch (e.KeyChar)
@@ -207,16 +207,18 @@ namespace DiceRoller
                     try
                     {
                         string str = Calculate(txtInput.Text);
+                        //do nothing if there is nothing to input
                         if (str.Length == 0)
                             break;
                         //run calculation and add it to display
-                        addHistory(str);
+                        addHistory(str, txtInput.Text);
                         //scroll to newly added value
                         gridHistory.FirstDisplayedScrollingRowIndex = gridHistory.RowCount - 1;
                         //save this formula for rerolling
-                        lastinput = txtInput.Text;
+                        histIndex = gridHistory.RowCount - 1;
                         //clear input
                         txtInput.Clear();
+                        histIndex = gridHistory.RowCount;
                     }
                     catch (DiceException ex)
                     {
@@ -435,9 +437,21 @@ namespace DiceRoller
         //run this on every keystroke because keypress events don't parse arrow keys
         private void txtTest(object sender, PreviewKeyDownEventArgs e)
         {
-            if (e.KeyCode == Keys.Up && lastinput.Length > 0)
+            if (e.KeyCode == Keys.Up)
             {
-                txtInput.Text = lastinput;
+                if (histIndex > 0)
+                {
+                    histIndex--;
+                }
+                txtInput.Text = gridHistory.Rows[histIndex].Cells[1].Value.ToString();
+            }
+            else if (e.KeyCode == Keys.Down)
+            {
+                if (histIndex < gridHistory.RowCount - 1)
+                {
+                    histIndex++;
+                }
+                txtInput.Text = gridHistory.Rows[histIndex].Cells[1].Value.ToString();
             }
         }
     }
