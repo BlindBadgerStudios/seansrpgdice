@@ -175,11 +175,20 @@ namespace DiceRoller
             //run the calculations and get the total
             str += " = " + Evaluate(tempstr);
 
-            //check that open rolls are enabled and that an open roll occured
-            //TODO: account for multiple dice in addition to the 1d100 when the openroll checkbox is checked.
-            if (((rollme.Contains('o')) && dice.RollCount > 1)||(dice.RollResults.Contains("20") && input.Contains("d20")))
+            //if the highlighting option is enabled
+            if (highlightingToolStripMenuItem.Checked)
             {
-                highlight = Color.Green;
+                //highlight critical successes in green
+                //TODO: account for multiple dice in addition to the 1d100 when the openroll checkbox is checked.
+                if ((rollme.Contains('o') && dice.RollCount > 1) || (dice.RollResults.Contains("20") && input.Contains("d20")))
+                {
+                    highlight = Color.Green;
+                } 
+                //highlight critical failures in red
+                else if ((rollme.Contains("d20") && dice.RollResults.Contains('1') && !char.IsDigit(dice.RollResults[dice.RollResults.IndexOf('1') + 1])))
+                {
+                    highlight = Color.Red;
+                }
             }
 
             //assemble the string to output
