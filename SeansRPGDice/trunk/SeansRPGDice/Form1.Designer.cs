@@ -45,7 +45,7 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.campaignToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.chkOpenRoll = new System.Windows.Forms.ToolStripMenuItem();
-            this.highlightingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.chkHighlight = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.instructionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -57,6 +57,7 @@
             this.colFormula = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Formula = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lblHistory = new System.Windows.Forms.Label();
+            this.checkForUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridHistory)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridFormulas)).BeginInit();
@@ -102,7 +103,7 @@
             this.formulasToolStripMenuItem1,
             this.rollHistoryToolStripMenuItem3});
             this.loadToolStripMenuItem2.Name = "loadToolStripMenuItem2";
-            this.loadToolStripMenuItem2.Size = new System.Drawing.Size(121, 22);
+            this.loadToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
             this.loadToolStripMenuItem2.Text = "Load...";
             // 
             // formulasToolStripMenuItem1
@@ -125,7 +126,7 @@
             this.rollHistoryToolStripMenuItem1,
             this.rollHistoryToolStripMenuItem2});
             this.saveToolStripMenuItem2.Name = "saveToolStripMenuItem2";
-            this.saveToolStripMenuItem2.Size = new System.Drawing.Size(121, 22);
+            this.saveToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
             this.saveToolStripMenuItem2.Text = "Save...";
             // 
             // rollHistoryToolStripMenuItem1
@@ -145,19 +146,19 @@
             // clearToolStripMenuItem
             // 
             this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.clearToolStripMenuItem.Text = "Clear";
             this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(118, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -165,7 +166,7 @@
             // 
             this.campaignToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.chkOpenRoll,
-            this.highlightingToolStripMenuItem});
+            this.chkHighlight});
             this.campaignToolStripMenuItem.Name = "campaignToolStripMenuItem";
             this.campaignToolStripMenuItem.Size = new System.Drawing.Size(106, 20);
             this.campaignToolStripMenuItem.Text = "Campaign Options";
@@ -180,20 +181,21 @@
             this.chkOpenRoll.Text = "Open Rolls";
             this.chkOpenRoll.ToolTipText = "Enable open rolls for all the rolling performed.";
             // 
-            // highlightingToolStripMenuItem
+            // chkHighlight
             // 
-            this.highlightingToolStripMenuItem.Checked = true;
-            this.highlightingToolStripMenuItem.CheckOnClick = true;
-            this.highlightingToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.highlightingToolStripMenuItem.Name = "highlightingToolStripMenuItem";
-            this.highlightingToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.highlightingToolStripMenuItem.Text = "Highlighting";
-            this.highlightingToolStripMenuItem.ToolTipText = "Highlight Natural 20s or Open Rolls as well as Natural 1s and Fumbles";
+            this.chkHighlight.Checked = true;
+            this.chkHighlight.CheckOnClick = true;
+            this.chkHighlight.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkHighlight.Name = "chkHighlight";
+            this.chkHighlight.Size = new System.Drawing.Size(152, 22);
+            this.chkHighlight.Text = "Highlighting";
+            this.chkHighlight.ToolTipText = "Highlight Natural 20s or Open Rolls as well as Natural 1s and Fumbles";
             // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.instructionsToolStripMenuItem,
+            this.checkForUpdatesToolStripMenuItem,
             this.toolStripSeparator2,
             this.aboutToolStripMenuItem1});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
@@ -203,19 +205,19 @@
             // instructionsToolStripMenuItem
             // 
             this.instructionsToolStripMenuItem.Name = "instructionsToolStripMenuItem";
-            this.instructionsToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.instructionsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.instructionsToolStripMenuItem.Text = "Instructions";
             this.instructionsToolStripMenuItem.Click += new System.EventHandler(this.instructionsToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(139, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(182, 6);
             // 
             // aboutToolStripMenuItem1
             // 
             this.aboutToolStripMenuItem1.Name = "aboutToolStripMenuItem1";
-            this.aboutToolStripMenuItem1.Size = new System.Drawing.Size(142, 22);
+            this.aboutToolStripMenuItem1.Size = new System.Drawing.Size(185, 22);
             this.aboutToolStripMenuItem1.Text = "About...";
             this.aboutToolStripMenuItem1.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -315,6 +317,12 @@
             this.lblHistory.TabIndex = 10;
             this.lblHistory.Text = "Roll History";
             // 
+            // checkForUpdatesToolStripMenuItem
+            // 
+            this.checkForUpdatesToolStripMenuItem.Name = "checkForUpdatesToolStripMenuItem";
+            this.checkForUpdatesToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.checkForUpdatesToolStripMenuItem.Text = "Check for updates...";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -361,9 +369,10 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colFormula;
         private System.Windows.Forms.DataGridViewTextBoxColumn Formula;
         private System.Windows.Forms.Label lblHistory;
-        private System.Windows.Forms.ToolStripMenuItem highlightingToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem chkHighlight;
         private System.Windows.Forms.DataGridViewTextBoxColumn colRolls;
         private System.Windows.Forms.DataGridViewTextBoxColumn colForm;
+        private System.Windows.Forms.ToolStripMenuItem checkForUpdatesToolStripMenuItem;
     }
 }
 

@@ -14,18 +14,88 @@ namespace DiceRoller
     {
         /* TODO:
          * Automatically check for updates
-         * Highlighting for fumbles
+         * Create a better about box
+         * Create a better set of instructions
+         * Save settings to settings file
          */
         private int histIndex;          //track the last formula used
         private Dice dice;              //dice class to handle rolling and getting results
         private Color highlight;        //what color to highlight a row
+        private string settingsFile;    //variable to store the settings file
 
+        //startup stuff
         public MainForm()
         {
             InitializeComponent();
+
+            //initialize our global variables
             histIndex = 0;
             dice = new Dice();
             highlight = Color.White;
+            settingsFile = "SRDSettings.txt";
+            
+            //load settings from settings file if it exists
+            loadSettings();
+        }
+
+        //load settings into the program
+        private void loadSettings()
+        {
+            try
+            {
+                //open settings file
+                FileStream fs = new FileStream(settingsFile, FileMode.Open);
+                StreamReader sr = new StreamReader(fs);
+
+                //load settings (window height x width, openroll checkbox, highlight checkbox)
+            }
+            catch (FileNotFoundException ex)
+            {
+                writeSettings();
+            }
+        }
+
+        //write settings to a file
+        private void writeSettings()
+        {
+            try
+            {
+                //create a new file to write settings to, overwriting anything existing
+                FileStream fs = new FileStream(settingsFile, FileMode.Create);
+                StreamWriter sw = new StreamWriter(fs);
+                
+                //window height x width, openroll checkbox, highlight checkbox
+                string setString = "";
+
+                //store window size
+                setString += this.Height.ToString() + "x" + this.Width.ToString() + ",";
+                
+                //openroll checkbox
+                setString += this.chkOpenRoll.Checked.ToString() + ",";
+
+                //highlight checkbox
+                setString += this.chkHighlight.Checked.ToString() + ",";
+
+                //write the settings to the file and close the stream
+                setString[setString.Length - 1] = ';';
+                sw.WriteLine(setString);
+                sw.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex, "Error saving settings");
+            }
+        }
+
+        //check online for updates
+        private void checkUpdates()
+        {
+            //check site for version number
+            //compare version number with existing version number
+            //if server version is newer than existing version
+            //prompt user to update
+            //if user clicks yes
+            //download and update application
         }
 
         //parse and replace the symbols in the string  with strings using regex
@@ -34,8 +104,7 @@ namespace DiceRoller
             return (double)new System.Xml.XPath.XPathDocument
             (new System.IO.StringReader("<r/>")).CreateNavigator().Evaluate
             (string.Format("number({0})", new
-            System.Text.RegularExpressions.Regex(@"([\+\-\*])").Replace(expression, " ${1} ")
-.Replace("/", " div ").Replace("%", " mod ")));
+            System.Text.RegularExpressions.Regex(@"([\+\-\*])").Replace(expression, " ${1} ").Replace("/", " div ").Replace("%", " mod ")));
         }
 
         //main parsing/calculating function
@@ -176,7 +245,7 @@ namespace DiceRoller
             str += " = " + Evaluate(tempstr);
 
             //if the highlighting option is enabled
-            if (highlightingToolStripMenuItem.Checked)
+            if (chkHighlight.Checked)
             {
                 //split out the results
                 string[] results = dice.RollResults.Split(new char[] {',','[',']'});
