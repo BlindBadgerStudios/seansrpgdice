@@ -16,12 +16,11 @@ namespace DiceRoller
          * Automatically check for updates
          * Create a better about box
          * Create a better set of instructions
-         * Save settings to settings file
+         * Save settings to internal application stored settings
          */
         private int histIndex;          //track the last formula used
         private Dice dice;              //dice class to handle rolling and getting results
         private Color highlight;        //what color to highlight a row
-        private string settingsFile;    //variable to store the settings file
 
         //startup stuff
         public MainForm()
@@ -32,59 +31,6 @@ namespace DiceRoller
             histIndex = 0;
             dice = new Dice();
             highlight = Color.White;
-            settingsFile = "SRDSettings.txt";
-            
-            //load settings from settings file if it exists
-            loadSettings();
-        }
-
-        //load settings into the program
-        private void loadSettings()
-        {
-            try
-            {
-                //open settings file
-                FileStream fs = new FileStream(settingsFile, FileMode.Open);
-                StreamReader sr = new StreamReader(fs);
-
-                //load settings (window height x width, openroll checkbox, highlight checkbox)
-            }
-            catch (FileNotFoundException ex)
-            {
-                writeSettings();
-            }
-        }
-
-        //write settings to a file
-        private void writeSettings()
-        {
-            try
-            {
-                //create a new file to write settings to, overwriting anything existing
-                FileStream fs = new FileStream(settingsFile, FileMode.Create);
-                StreamWriter sw = new StreamWriter(fs);
-                
-                //window height x width, openroll checkbox, highlight checkbox
-                string setString = "";
-
-                //store window size
-                setString += this.Height.ToString() + "x" + this.Width.ToString() + ",";
-                
-                //openroll checkbox
-                setString += this.chkOpenRoll.Checked.ToString() + ",";
-
-                //highlight checkbox
-                setString += this.chkHighlight.Checked.ToString() + ",";
-
-                //write the settings to the file and close the stream
-                setString[setString.Length - 1] = ';';
-                sw.WriteLine(setString);
-                sw.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex, "Error saving settings");
-            }
         }
 
         //check online for updates
@@ -95,7 +41,10 @@ namespace DiceRoller
             //if server version is newer than existing version
             //prompt user to update
             //if user clicks yes
-            //download and update application
+            //download and update application 
+            //Download new app
+            //run new app with /switch to instruct it to remove the previous app and take on the old app's exe name
+            //close current app
         }
 
         //parse and replace the symbols in the string  with strings using regex
@@ -113,7 +62,7 @@ namespace DiceRoller
             //remove spaces and change to lowercase to make it easier/more predictable to work with
             string str = input.ToLower().Replace(" ", "");
             string label = "";
-            char[] operators = {'+','*','/','(',')','-','%'};
+            char[] operators = { '+', '*', '/', '(', ')', '-', '%' };
             int start, end, temp;
 
 
@@ -142,7 +91,7 @@ namespace DiceRoller
                     throw new DiceException("Formula can not reference itself", "Invalid Formula");
                 }
                 //store formula in gridFormulas
-                gridFormulas.Rows.Add(label,str);
+                gridFormulas.Rows.Add(label, str);
                 return "Stored: " + input;
             }
 
@@ -197,7 +146,7 @@ namespace DiceRoller
                 if (chkOpenRoll.Checked && rollme.Contains("d100"))
                 {
                     //append the open roll operator
-                    rollme = rollme.Insert(rollme.IndexOf("d100")+4,"o");
+                    rollme = rollme.Insert(rollme.IndexOf("d100") + 4, "o");
                 }
 
                 //roll the dice and get a resulting number
@@ -222,14 +171,14 @@ namespace DiceRoller
             //check every character of the string for forbidden characters
             for (int i = 0; i < tempstr.Length; i++)
             {
-                if ( !char.IsDigit(tempstr[i]) && !operators.Contains(tempstr[i]) && !(tempstr[i] == '.') )
+                if (!char.IsDigit(tempstr[i]) && !operators.Contains(tempstr[i]) && !(tempstr[i] == '.'))
                 {
                     throw new Exception("Invalid formula");
                 }
             }
-            
+
             //handle n(formula) multiplication...insert a '*'
-            for (int i = 1 ; i < tempstr.Length - 1 ; i++ )
+            for (int i = 1; i < tempstr.Length - 1; i++)
             {
                 if (tempstr[i] == '(' && char.IsDigit(tempstr[i - 1]))
                 {
@@ -248,14 +197,14 @@ namespace DiceRoller
             if (chkHighlight.Checked)
             {
                 //split out the results
-                string[] results = dice.RollResults.Split(new char[] {',','[',']'});
+                string[] results = dice.RollResults.Split(new char[] { ',', '[', ']' });
 
                 //highlight critical successes in green
-                if ((rollme.Contains('o') && dice.RollCount > 1) 
+                if ((rollme.Contains('o') && dice.RollCount > 1)
                     || (results.Contains("20") && input.Contains("d20")))
                 {
                     highlight = Color.Green;
-                } 
+                }
                 //highlight critical failures in red if there wasn't already a success in the list of rolls
                 else if ((rollme.Contains("d20") && results.Contains("1"))
                     || (rollme.Contains("d100o") && (results.Contains("1") || results.Contains("2") || results.Contains("3"))))
@@ -326,10 +275,10 @@ namespace DiceRoller
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //insert about box here
-            MessageBox.Show("This program created by Sean Wells and Thomas Wild." + System.Environment.NewLine 
+            MessageBox.Show("This program created by Sean Wells and Thomas Wild." + System.Environment.NewLine
                 + "Send feedback to <codemonk84@gmail.com>" + System.Environment.NewLine
-                + System.Environment.NewLine 
-                + "Extra Thanks to..." + System.Environment.NewLine 
+                + System.Environment.NewLine
+                + "Extra Thanks to..." + System.Environment.NewLine
                 + "Aaron Biegalski" + System.Environment.NewLine
                 + "Trevor Hoagland" + System.Environment.NewLine
                 , "About...");
@@ -338,10 +287,10 @@ namespace DiceRoller
         //display instructions on how to use the app
         private void instructionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Calculations are performed in the order it is typed, each modifier being performed on the whole before it." + 
-                System.Environment.NewLine + 
-                System.Environment.NewLine + 
-                "Input similar to the following examples:" + System.Environment.NewLine + 
+            MessageBox.Show("Calculations are performed in the order it is typed, each modifier being performed on the whole before it." +
+                System.Environment.NewLine +
+                System.Environment.NewLine +
+                "Input similar to the following examples:" + System.Environment.NewLine +
                 "2d6" + System.Environment.NewLine +
                 "6d6+24-10/2 (modifiers are supported)" + System.Environment.NewLine +
                 "10d4+2d6-5+3/2 (multiple dice sets are supported)" + System.Environment.NewLine +
@@ -349,7 +298,7 @@ namespace DiceRoller
                 "10d4+(2d6-5)+3/2 (parenthesis sets are supported)" + System.Environment.NewLine +
                 "cha = 18 (labelled saving of formulas are supported)" + System.Environment.NewLine +
                 "1d20+cha (using labels to reference saved formulas are supported)" + System.Environment.NewLine +
-                System.Environment.NewLine + 
+                System.Environment.NewLine +
                 "You may add as many modifiers and dice sets as you wish.", "Instructions");
         }
 
@@ -395,7 +344,7 @@ namespace DiceRoller
             for (int i = 0; i < gridHistory.Rows.Count; i++)
             {
                 //use newline as a delimeter between records
-                saveme += gridHistory.Rows[i].Cells[0].Value.ToString().Replace(System.Environment.NewLine,"|") + System.Environment.NewLine;
+                saveme += gridHistory.Rows[i].Cells[0].Value.ToString().Replace(System.Environment.NewLine, "|") + System.Environment.NewLine;
             }
 
             saveTxtFile("Roll History", saveme);
@@ -436,7 +385,7 @@ namespace DiceRoller
                 }
                 sr.Close();
 
-                for(int i=0;i<input.Count;i++)
+                for (int i = 0; i < input.Count; i++)
                 {
                     //replace "|" with System.Environment.NewLine
                     input[i] = input[i].Replace("|", System.Environment.NewLine);
@@ -459,7 +408,7 @@ namespace DiceRoller
                         input.RemoveAt(0);
                         foreach (string s in input)
                         {
-                            gridFormulas.Rows.Add(s.Substring(0,s.IndexOf(',')),s.Substring(s.IndexOf(',') +1));
+                            gridFormulas.Rows.Add(s.Substring(0, s.IndexOf(',')), s.Substring(s.IndexOf(',') + 1));
                         }
                     }
                     break;
@@ -495,7 +444,7 @@ namespace DiceRoller
             }
             catch (Exception ex)
             {
-                MessageBox.Show( ex.Message);
+                MessageBox.Show(ex.Message);
             }
         }
 
