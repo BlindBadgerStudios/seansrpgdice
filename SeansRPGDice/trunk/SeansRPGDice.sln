@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeansRPGDice", "SeansRPGDice\SeansRPGDice.csproj", "{7A984321-F2E6-460A-8F83-37246FDC4CB1}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SRD Installer", "SRD Installer\SRD Installer.vdproj", "{E78DF0A7-1B2B-4E4F-ABF3-D49F62B04EC8}"
