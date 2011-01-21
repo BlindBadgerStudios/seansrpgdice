@@ -48,6 +48,7 @@
             this.chkHighlight = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.instructionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkForUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.gridHistory = new System.Windows.Forms.DataGridView();
@@ -57,7 +58,6 @@
             this.colFormula = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Formula = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lblHistory = new System.Windows.Forms.Label();
-            this.checkForUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridHistory)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridFormulas)).BeginInit();
@@ -70,8 +70,8 @@
             this.txtInput.Name = "txtInput";
             this.txtInput.Size = new System.Drawing.Size(267, 20);
             this.txtInput.TabIndex = 0;
-            this.txtInput.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.txtTest);
             this.txtInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtInput_OnEnter);
+            this.txtInput.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.txtTest);
             // 
             // menuStrip1
             // 
@@ -94,7 +94,7 @@
             this.toolStripSeparator1,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // loadToolStripMenuItem2
@@ -109,14 +109,14 @@
             // formulasToolStripMenuItem1
             // 
             this.formulasToolStripMenuItem1.Name = "formulasToolStripMenuItem1";
-            this.formulasToolStripMenuItem1.Size = new System.Drawing.Size(139, 22);
+            this.formulasToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.formulasToolStripMenuItem1.Text = "Formulas";
             this.formulasToolStripMenuItem1.Click += new System.EventHandler(this.formulasToolStripMenuItem1_Click);
             // 
             // rollHistoryToolStripMenuItem3
             // 
             this.rollHistoryToolStripMenuItem3.Name = "rollHistoryToolStripMenuItem3";
-            this.rollHistoryToolStripMenuItem3.Size = new System.Drawing.Size(139, 22);
+            this.rollHistoryToolStripMenuItem3.Size = new System.Drawing.Size(152, 22);
             this.rollHistoryToolStripMenuItem3.Text = "Roll History";
             this.rollHistoryToolStripMenuItem3.Click += new System.EventHandler(this.rollHistoryToolStripMenuItem3_Click);
             // 
@@ -132,14 +132,14 @@
             // rollHistoryToolStripMenuItem1
             // 
             this.rollHistoryToolStripMenuItem1.Name = "rollHistoryToolStripMenuItem1";
-            this.rollHistoryToolStripMenuItem1.Size = new System.Drawing.Size(139, 22);
+            this.rollHistoryToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.rollHistoryToolStripMenuItem1.Text = "Formulas";
             this.rollHistoryToolStripMenuItem1.Click += new System.EventHandler(this.rollHistoryToolStripMenuItem1_Click);
             // 
             // rollHistoryToolStripMenuItem2
             // 
             this.rollHistoryToolStripMenuItem2.Name = "rollHistoryToolStripMenuItem2";
-            this.rollHistoryToolStripMenuItem2.Size = new System.Drawing.Size(139, 22);
+            this.rollHistoryToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
             this.rollHistoryToolStripMenuItem2.Text = "Roll History";
             this.rollHistoryToolStripMenuItem2.Click += new System.EventHandler(this.rollHistoryToolStripMenuItem2_Click);
             // 
@@ -168,7 +168,7 @@
             this.chkOpenRoll,
             this.chkHighlight});
             this.campaignToolStripMenuItem.Name = "campaignToolStripMenuItem";
-            this.campaignToolStripMenuItem.Size = new System.Drawing.Size(106, 20);
+            this.campaignToolStripMenuItem.Size = new System.Drawing.Size(119, 20);
             this.campaignToolStripMenuItem.Text = "Campaign Options";
             // 
             // chkOpenRoll
@@ -199,25 +199,31 @@
             this.toolStripSeparator2,
             this.aboutToolStripMenuItem1});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "Help";
             // 
             // instructionsToolStripMenuItem
             // 
             this.instructionsToolStripMenuItem.Name = "instructionsToolStripMenuItem";
-            this.instructionsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.instructionsToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.instructionsToolStripMenuItem.Text = "Instructions";
             this.instructionsToolStripMenuItem.Click += new System.EventHandler(this.instructionsToolStripMenuItem_Click);
+            // 
+            // checkForUpdatesToolStripMenuItem
+            // 
+            this.checkForUpdatesToolStripMenuItem.Name = "checkForUpdatesToolStripMenuItem";
+            this.checkForUpdatesToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.checkForUpdatesToolStripMenuItem.Text = "Check for updates...";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(182, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(176, 6);
             // 
             // aboutToolStripMenuItem1
             // 
             this.aboutToolStripMenuItem1.Name = "aboutToolStripMenuItem1";
-            this.aboutToolStripMenuItem1.Size = new System.Drawing.Size(185, 22);
+            this.aboutToolStripMenuItem1.Size = new System.Drawing.Size(179, 22);
             this.aboutToolStripMenuItem1.Text = "About...";
             this.aboutToolStripMenuItem1.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -317,12 +323,6 @@
             this.lblHistory.TabIndex = 10;
             this.lblHistory.Text = "Roll History";
             // 
-            // checkForUpdatesToolStripMenuItem
-            // 
-            this.checkForUpdatesToolStripMenuItem.Name = "checkForUpdatesToolStripMenuItem";
-            this.checkForUpdatesToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.checkForUpdatesToolStripMenuItem.Text = "Check for updates...";
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -334,7 +334,7 @@
             this.Controls.Add(this.txtInput);
             this.Controls.Add(this.menuStrip1);
             this.Name = "MainForm";
-            this.Text = "Sean\'s Dice Roller";
+            this.Text = "Sean\'s Dice Roller [Beta]";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridHistory)).EndInit();
