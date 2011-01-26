@@ -145,8 +145,6 @@ namespace DiceRoller
 
         public int Roll(string str)
         {
-            List<int> rolls = new List<int>();
-
             if (!dice_parse.IsMatch(str))
             {
                 throw new DiceException("Dice expression is unrecognized", "Dice Format Error");
