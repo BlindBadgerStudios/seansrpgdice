@@ -16,7 +16,7 @@ namespace DiceRoller
          * Automatically check for updates
          * Create a better about box
          * Create a better set of instructions
-         * Save settings to internal application stored settings
+         * Save settings to internal application stored settings (requires an install with directory or registry access)
          */
         private int histIndex;          //track the last formula used
         private Dice dice;              //dice class to handle rolling and getting results
