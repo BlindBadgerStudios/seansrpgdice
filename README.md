@@ -3,7 +3,7 @@ STATUS: We're not dead, just barely moving! I haven't been playing dice games mu
 
 This is a dice app (basically a fancy random number generator) for use in dice-based RPGs. Currently, I support your typical DnD type setting and another setting called Anima (open rolls).
 
-REQUIRES: .NET Framework 3.5
+REQUIRES: .NET Framework 4.8
 
 Current features include:
 
