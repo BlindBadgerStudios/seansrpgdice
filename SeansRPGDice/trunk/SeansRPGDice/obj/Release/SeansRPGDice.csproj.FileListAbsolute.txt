@@ -1,0 +1,10 @@
+C:\Users\sean\Source\Repos\seansrpgdice\SeansRPGDice\trunk\SeansRPGDice\bin\Release\DiceRoller.exe.config
+C:\Users\sean\Source\Repos\seansrpgdice\SeansRPGDice\trunk\SeansRPGDice\bin\Release\DiceRoller.exe
+C:\Users\sean\Source\Repos\seansrpgdice\SeansRPGDice\trunk\SeansRPGDice\bin\Release\DiceRoller.pdb
+C:\Users\sean\Source\Repos\seansrpgdice\SeansRPGDice\trunk\SeansRPGDice\obj\Release\SeansRPGDice.csproj.AssemblyReference.cache
+C:\Users\sean\Source\Repos\seansrpgdice\SeansRPGDice\trunk\SeansRPGDice\obj\Release\DiceRoller.MainForm.resources
+C:\Users\sean\Source\Repos\seansrpgdice\SeansRPGDice\trunk\SeansRPGDice\obj\Release\DiceRoller.Properties.Resources.resources
+C:\Users\sean\Source\Repos\seansrpgdice\SeansRPGDice\trunk\SeansRPGDice\obj\Release\SeansRPGDice.csproj.GenerateResource.cache
+C:\Users\sean\Source\Repos\seansrpgdice\SeansRPGDice\trunk\SeansRPGDice\obj\Release\SeansRPGDice.csproj.CoreCompileInputs.cache
+C:\Users\sean\Source\Repos\seansrpgdice\SeansRPGDice\trunk\SeansRPGDice\obj\Release\DiceRoller.exe
+C:\Users\sean\Source\Repos\seansrpgdice\SeansRPGDice\trunk\SeansRPGDice\obj\Release\DiceRoller.pdb
