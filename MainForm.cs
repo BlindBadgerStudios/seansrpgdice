@@ -12,17 +12,12 @@ namespace DiceRoller
 {
     public partial class MainForm : Form
     {
-        /* TODO:
-         * Automatically check for updates
-         * Create a better about box
-         * Create a better set of instructions
-         * Save settings to internal application stored settings (requires an install with directory or registry access)
-         */
+        /* Creat global vars */
         private int histIndex;          //track the last formula used
         private Dice dice;              //dice class to handle rolling and getting results
         private Color highlight;        //what color to highlight a row
 
-        //startup stuff
+        /* Startup stuff */
         public MainForm()
         {
             InitializeComponent();
@@ -33,21 +28,18 @@ namespace DiceRoller
             highlight = Color.White;
         }
 
-        //check online for updates
+        /* STUB: check online for updates */
         private void checkUpdates()
         {
-            //check site for version number
+            //check github site for version number
             //compare version number with existing version number
             //if server version is newer than existing version
             //prompt user to update
             //if user clicks yes
-            //download and update application 
-            //Download new app
-            //run new app with /switch to instruct it to remove the previous app and take on the old app's exe name
-            //close current app
+            //open site to github release page using System.Diagnostics.Process.Start("URL"); 
         }
 
-        //parse and replace the symbols in the string  with strings using regex
+        /* Parse and replace the symbols in the string  with strings using regex */
         public static double Evaluate(string expression)
         {
             return (double)new System.Xml.XPath.XPathDocument
@@ -56,23 +48,26 @@ namespace DiceRoller
             System.Text.RegularExpressions.Regex(@"([\+\-\*])").Replace(expression, " ${1} ").Replace("/", " div ").Replace("%", " mod ")));
         }
 
-        //main parsing/calculating function
+        /* main parsing/calculating function */
         private string Calculate(string input)
         {
-            //remove spaces and change to lowercase to make it easier/more predictable to work with
-            string str = input.ToLower().Replace(" ", "");
+            // Initialize variables
             string label = "";
             char[] operators = { '+', '*', '/', '(', ')', '-', '%' };
             int start, end, temp;
 
+            // Remove spaces and change to lowercase to make it easier/more predictable to work with
+            string str = input.ToLower().Replace(" ", "");
+            
 
-            //don't process if there's nothing in the formula
+
+            // Skip processing if the input is empty
             if (str.Length == 0)
             {
                 return "";
             }
 
-            //handle labels
+            // Store labels
             if (input.Contains('='))
             {
                 //parse out the label into it's own variable
@@ -95,9 +90,10 @@ namespace DiceRoller
                 return "Stored: " + input;
             }
 
+            // Reset dice for fresh rolls
             dice.Clear();
 
-            //handle variables called in the formula
+            // Parse variables called in the formula
             for (int i = 0; i < gridFormulas.Rows.Count; i++)
             {
                 //if a variable name exists in the formula and the label is not the same as the value
@@ -111,7 +107,7 @@ namespace DiceRoller
 
             string rollme = "";
 
-            //parse through the string character by character for dice rolls and process them
+            // Parse through the input string character by character for dice rolls and process them
             for (start = 0; start < str.Length; start++)
             {
                 //set the start variable to the 'd' chracter
@@ -119,46 +115,49 @@ namespace DiceRoller
                 //if there's no dice, move on
                 if (start == -1)
                 {
+                    //Exit Loop
                     break;
                 }
 
-                //move the start variable back until it reaches a non-number
+                // To find the beginning of the XdY, move the start variable back until it reaches a non-number
                 for (start--; start >= 0 && !operators.Contains(str[start]); start--)
                 { }
-                //start = tempstr.LastIndexOfAny(operators, 0, start);
+                // Move start variable forward one to identify the first number
                 start++;
 
-                //set the end variable to the next operator
+                // Set the end variable to the next operator to define the end of the dice string
                 end = str.IndexOfAny(operators, start);
 
-                //if there isn't any more operators, set it to the end of the string
+                // If there isn't any more operators, set it to the end of the string
                 if (end == -1)
                 {
                     end = str.Length;
                 }
 
-                //make the end variable the length of the dice variable
+                // Use the end variable to calculate and store the length of the detected dice string
                 end -= start;
 
+                // Store the detected dice string into rollme
                 rollme = str.Substring(start, end);
 
-                //open roll checkbox check (only on d100)
+                // If the Open roll feature is enabled and the dice is a d100, automatically add the open roll operator
                 if (chkOpenRoll.Checked && rollme.Contains("d100"))
                 {
                     //append the open roll operator
                     rollme = rollme.Insert(rollme.IndexOf("d100") + 4, "o");
                 }
 
-                //roll the dice and get a resulting number
+                // Roll the dice and store the result in temp
                 temp = dice.Roll(rollme);
 
-                //replace the dice variable with the result
+                // Replace the dice string (XdY) with the result (a number)
                 str = str.Remove(start, end).Insert(start, temp.ToString());
             }
 
+            // Copy the input string (which should just be a math string now) into a temporary variable
             string tempstr = str;
 
-            //convert subtraction operations into additions of negative numbers
+            // Convert subtraction operations into additions of negative numbers for ease of processing
             for (int i = 1; i < tempstr.Length; i++)
             {
                 if (tempstr[i] == '-' && tempstr[i - 1] != '*' &&
@@ -168,7 +167,7 @@ namespace DiceRoller
                 }
             }
 
-            //check every character of the string for forbidden characters
+            // Check every character of the string for forbidden characters
             for (int i = 0; i < tempstr.Length; i++)
             {
                 if (!char.IsDigit(tempstr[i]) && !operators.Contains(tempstr[i]) && !(tempstr[i] == '.'))
@@ -177,35 +176,37 @@ namespace DiceRoller
                 }
             }
 
-            //handle n(formula) multiplication...insert a '*'
+            // Process n(a) formatted multiplication by inserting an explicit '*'
             for (int i = 1; i < tempstr.Length - 1; i++)
             {
+                // Detect if there is a number preceding the '(' character
                 if (tempstr[i] == '(' && char.IsDigit(tempstr[i - 1]))
                 {
                     tempstr = tempstr.Insert(i, "*");
                 }
+                // Detect if there is a number succeeding the ')' character
                 if (tempstr[i] == ')' && char.IsDigit(tempstr[i + 1]))
                 {
                     tempstr = tempstr.Insert(i + 1, "*");
                 }
             }
 
-            //run the calculations and get the total
+            // Do math and show your work (run the calculations and get the total, showing the formula and the result)
             str += " = " + Evaluate(tempstr);
 
-            //if the highlighting option is enabled
+            // If the highlighting option is enabled, highlight critical successes/failures
             if (chkHighlight.Checked)
             {
-                //split out the results
+                // Split out the result of multiple rolls
                 string[] results = dice.RollResults.Split(new char[] { ',', '[', ']' });
 
-                //highlight critical successes in green
+                // Highlight critical successes in green
                 if ((rollme.Contains('o') && dice.RollCount > 1)
                     || (results.Contains("20") && input.Contains("d20")))
                 {
                     highlight = Color.Green;
                 }
-                //highlight critical failures in red if there wasn't already a success in the list of rolls
+                // Highlight critical failures in red if there wasn't already a success in the list of rolls
                 else if ((rollme.Contains("d20") && results.Contains("1"))
                     || (rollme.Contains("d100o") && (results.Contains("1") || results.Contains("2") || results.Contains("3"))))
                 {
@@ -213,7 +214,7 @@ namespace DiceRoller
                 }
             }
 
-            //assemble the string to output
+            // Assemble the final output string to be displayed
             input += ": " + dice.RollResults + "->" + System.Environment.NewLine + str;
             return input;
         }
@@ -229,7 +230,7 @@ namespace DiceRoller
             highlight = Color.White;
         }
 
-        //handle enter key to submit the input
+        // Handle enter key to submit the input
         private void txtInput_OnEnter(object sender, KeyPressEventArgs e)
         {
             switch (e.KeyChar)
@@ -250,6 +251,8 @@ namespace DiceRoller
                         //clear input
                         txtInput.Clear();
                         histIndex = gridHistory.RowCount;
+                        //remove selection highlight to ensure crit successes show through
+                        gridHistory.ClearSelection();
                     }
                     catch (DiceException ex)
                     {
@@ -268,15 +271,17 @@ namespace DiceRoller
         //exit the program
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //TODO: Add confirmation dialog to prevent accidental closure
             this.Close();
         }
 
-        //show about messagebox
+        // Show "about" info
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //insert about box here
+            // TODO: Convert to another form so we can make the URL clickable with a LinkLabel
             MessageBox.Show("This program created by Sean Wells and Thomas Wild." + System.Environment.NewLine
-                + "Send feedback to <codemonk84@gmail.com>" + System.Environment.NewLine
+                + "Send feedback to the github repository" + System.Environment.NewLine
+                + "https://github.com/BlindBadgerStudios/seansrpgdice"
                 + System.Environment.NewLine
                 + "Extra Thanks to..." + System.Environment.NewLine
                 + "Aaron Biegalski" + System.Environment.NewLine
@@ -284,10 +289,10 @@ namespace DiceRoller
                 , "About...");
         }
 
-        //display instructions on how to use the app
+        // Display instructions on how to use the app (needs improvement)
         private void instructionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Calculations are performed in the order it is typed, each modifier being performed on the whole before it." +
+            MessageBox.Show("Calculations are performed in the order it is typed (left to right), each modifier being performed on the whole before it." +
                 System.Environment.NewLine +
                 System.Environment.NewLine +
                 "Input similar to the following examples:" + System.Environment.NewLine +
@@ -302,9 +307,10 @@ namespace DiceRoller
                 "You may add as many modifiers and dice sets as you wish.", "Instructions");
         }
 
-        //clear the history
+        // Clear the roll history
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //TODO: Add a confirmation prompt
             gridHistory.Rows.Clear();
         }
 
@@ -431,7 +437,7 @@ namespace DiceRoller
             }
         }
 
-        //load roll history file
+        // Import roll history file
         private void rollHistoryToolStripMenuItem3_Click(object sender, EventArgs e)
         {
             try
@@ -448,7 +454,7 @@ namespace DiceRoller
             }
         }
 
-        //load formula file
+        // Import formula file
         private void formulasToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             try
@@ -465,7 +471,7 @@ namespace DiceRoller
             }
         }
 
-        //run this on every keystroke because keypress events don't parse arrow keys
+        // Run this on every keystroke because keypress events don't parse arrow keys -.-
         private void txtTest(object sender, PreviewKeyDownEventArgs e)
         {
             if (e.KeyCode == Keys.Up)
